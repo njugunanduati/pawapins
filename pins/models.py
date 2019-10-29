@@ -48,8 +48,7 @@ class Card(TimeStampedModel):
     pin = models.TextField(unique=True)
     batch = models.ForeignKey(CardBatch, on_delete=models.CASCADE)
     status = models.IntegerField(default=0, blank=True)
-    used_by = models.ForeignKey(
-        Subscriber, blank=True, null=True, on_delete=models.CASCADE)
+    used_by = models.CharField(max_length=20, blank=True, null=True)
     sid = models.CharField(max_length=60, blank=True, null=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     used_at = models.DateTimeField(auto_now_add=True, blank=True)

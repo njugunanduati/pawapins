@@ -3,10 +3,11 @@ import random
 import string
 import logging
 import io
+import csv
 
 from datetime import datetime, timedelta
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -107,7 +108,7 @@ def move_to_live(request, id):
             pins = CardPreview.objects.filter(batch=batch, status=0)
             if pins:
                 for pin in pins:
-                    card = Card(id=pin.id, pin=pin.pin, created_at=pin.created, batch=pin.batch, active=False, status=0, used_at=datetime(2017, 7, 1))
+                    card = Card(id=pin.id, pin=pin.pin, created_at=pin.created, batch=pin.batch, active=True, status=0, used_at=datetime(2017, 7, 1))
                     card.save()
                 batch.live = 3
                 batch.save()
@@ -120,3 +121,24 @@ def move_to_live(request, id):
     except Exception as e:
         print("Error as ", str(e))
         logging.exception(e)
+
+
+
+# @login_required
+# def print_csv(request):
+#     # Create the HttpResponse object with the appropriate CSV header.
+#     response = HttpResponse(content_type='text/csv')
+#     response['Content-Disposition'] = 'attachment; filename="active_pins.csv"'
+
+#     cards = Card.objects.filter(pin=pin, status=0).all()
+
+#     writer = csv.writer(response)
+#     for card in cards:
+#         writer.writerow([card.pin, , card.batch.denomination, 'Bar', 'Baz'])
+
+#     return response
+#     status = models.IntegerField(default=0, blank=True)
+#     sid = models.CharField(max_length=60, blank=True, null=True, db_index=True)
+#     created_at = models.DateTimeField(auto_now_add=True, blank=True)
+#     used_at = models.DateTimeField(auto_now_add=True, blank=True)
+#     active = models.BooleanField(default=False, blank=True)

@@ -17,7 +17,7 @@ from .utils import get_rand
 
 from .models import Token, Reversal, Sms
 from pins.models import Subscriber, Card
-from sms import send_sms
+from .sms import send_sms
 
 
 class SmsView(View):
@@ -42,7 +42,7 @@ class SmsView(View):
 		sms.save()
 		data['msisdn'] = msisdn
 		data['message'] = message
-		return HttpResponseRedirect(reverse('sms', args=(),
+		return HttpResponseRedirect(reverse('vend', args=(),
 			kwargs={'msisdn' : msisdn, 'message' : message }))
 
 
@@ -69,7 +69,31 @@ class VendView(View):
 		if vend['code'] == "elec000":
 			card = Card.objects.filter(pin=pin).get()
 			card.status = 1
+			used_by = msisdn
+			active=False
 			card.save()
+			# save the vend data
+			token = Token(
+				vend_time=vend['vend_time'],
+				reference=vend['reference'],
+				address=vend['address'],
+				code=vend['code'],
+				token=vend['token'],
+				units=vend['units'],
+				units_type=vend['units_type'],
+				amount=vend['amount'],
+				tax=vend['tax'],
+				tarrif=vend['tarrif'],
+				description=vend['description'],
+				rct_num=vend['rct_num'],
+				meter=meter,
+				amount_paid=amount,
+				pin=pin
+			)
+			token.save()
+			# send sms
+			message = 'Meter: {}, Token: {}, Amount: {}'.format(meter, vend['token'], amount)
+			return HttpResponse(send_sms(message, msisdn))
 		elif vend['code'] == "elec003":
 			pass
 		elif vend['code'] == "elec004":
@@ -77,5 +101,5 @@ class VendView(View):
 		else:
 			pass
 		# change the pin status to used
-		return HttpResponse(ipay_connect.make_vend())
+		# return HttpResponse(ipay_connect.make_vend())
 

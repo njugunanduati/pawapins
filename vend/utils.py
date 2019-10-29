@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 import random
 
-
 def get_rand():
 	"""
 	get randome number

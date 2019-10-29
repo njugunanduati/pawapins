@@ -76,3 +76,51 @@ class Sms(TimeStampedModel):
 
 	def __repr__(self):
 		return self.id
+
+
+@architect.install('partition', type='range', subtype='date', constraint='month', column='created')
+class SmsSent(TimeStampedModel):
+	"""
+	table for storing the successful sms messages sent to customer
+	"""
+	msisdn = models.CharField(max_length=20, null=True)
+	message = models.CharField(max_length=300, null=False)
+	cost = models.CharField(max_length=30, null=False)
+	status = models.CharField(max_length=30, null=False)
+	message_id = models.CharField(max_length=300, null=False)
+
+	def __repr__(self):
+		return self.id
+
+
+
+def send_text_message(request):
+    if request.method == 'GET':
+        template_name = 'send_sms.html'
+        return render(request, template_name)
+    else:
+        phone = request.POST['phone_number']
+        message = request.POST['message']
+        try:
+            response = send_sms(phone, message)
+            data = response['SMSMessageData']['Recipients'][0]
+            sms = Sms.objects.create(
+                sender=request.user,
+                phone_number=data['number'],
+                message=message,
+                cost=data['cost'],
+                status=data['status'],
+                message_id=data['messageId']
+            )
+            sms.save()
+            return HttpResponseRedirect('/sms/sms/')
+        except Exception as e:
+            print("This is the error:" + str(e))
+
+# {
+#     'statusCode': 101, 
+#     'number': '+254729556997', 
+#     'cost': 'KES 0.8000',
+#     'status': 'Success', 
+#     'messageId': 'ATXid_c2f1aec156b318ff999de775d38bfbb9'
+# }
