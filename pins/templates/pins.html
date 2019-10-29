@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block app_content %}
+
+    {% block form %}
+        <div class="col-sm-6">
+            <form method="post" class="form-inline">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-search"></i>Search</button>
+                </div>
+            </form>
+        </div>
+    {% endblock %}
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#Batch.</th>
+                <th>Pin</th>
+                <th>Status</th>
+                <th>Used by</th>
+                <th>Sid</th>
+                <th>Created Date</th>
+                <th>Used At</th>
+                <th>Active</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in pins %}
+            <tr>
+                <td>
+                    {{ c.batch.id }}
+                </td>
+                <td>
+                    {{ c.pin }}
+                </td>
+                <td>
+                    {{ c.status }}
+                </td>
+                <td>
+                    {{ c.used_by }}
+                </td>
+                <td>
+                    {{ c.sid }}
+                </td>
+                <td>
+                    {{ c.created_at }}
+                </td>
+                <td>
+                    {{ c.used_at }}
+                </td>
+                <td>
+                    {{ c.active }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="col-sm-6">
+                <a href="{% url 'pins:pins' %}" class="btn btn-success">back</a>
+            </div> 
+            <div class="col-sm-6 pagination">
+                <span class="step-links">
+                    {% if pins.has_previous %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page={{ pins.previous_page_number }}">previous</a>
+                    {% endif %}
+
+                    <span class="current">
+                        Page {{ pins.number }} of {{ pins.paginator.num_pages }}.
+                    </span>
+
+                    {% if pins.has_next %}
+                        <a href="?page={{ pins.next_page_number }}">next</a>
+                        <a href="?page={{ pins.paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock  %}

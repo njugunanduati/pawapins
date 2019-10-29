@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+
+{% block app_content %}
+
+    <table id="users_table" class="table table-striped">
+        <thead>
+            <tr>
+                <th>#Batch</th>
+                <th>Denomination</th>
+                <th>Total Cards</th>
+                <th>Created by</th>
+                <th>Expiry Date</th>
+                <th>Status</th>
+                <th>Live</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for b in batch %}
+            <tr>
+                <td>
+                    <a href="{% url 'pins:show_pins' id=b.id %}">{{ b.id }}</a>
+                </td>
+                <td>
+                    {{ b.denomination }}
+                </td>
+                <td>
+                    {{ b.totalcards }}
+                </td>
+                <td>
+                    {{ b.created_by }}
+                </td>
+                <td>
+                    {{ b.expire_at }}
+                </td>
+                <td>
+                    {{ b.status }}
+                </td>
+                <td>
+                    {{ b.live }}
+                </td>
+                <td>
+                    <a href="{% url 'pins:move_to_live' id=b.id %}" class="btn btn-success">Move to live</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="row">
+        <div class="col-sm-6">
+            <a href="{% url 'pins:add_batch' %}" class="btn btn-primary">Add batch</a>
+        </div> 
+    </div>
+
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+
+{% block app_content %}
+
+<table id="users_table" class="table table-striped">
+    <thead>
+        <tr>
+            <th>No.</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>UserName</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+            {% if user.is_superuser is not True %}
+            <tr>
+                <td>
+                    {{ forloop.counter1 }}
+                </td>
+                <td>
+                    {{ user.first_name }}
+                </td>
+                <td>
+                    {{ user.last_name }}
+                </td>
+                <td>
+                    {{ user.username }}
+                </td>
+                <td>
+                    {{ user.email }}
+                </td>
+                <td>
+                    {{ user.profile.phone_number }}
+                </td>
+                <td>
+                    <a href="{% url 'accounts:edit_user'  id=user.id %}" class="btn btn-success">Edit</a>
+                </td>
+                <td>
+                    {% if request.user.id  !=  user.id %}
+                        <a href="#" class="btn btn-danger">Deactivate</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+<div>
+    <a href="{% url 'accounts:add_user' %}" class="btn btn-primary">Add User</a>  
+</div>
+
+{% block script %}
+    {{ block.super }}
+    <script>
+        $(document).ready( function () {
+        $('#users_table').DataTable();
+        });
+    </script>
+{% endblock %}
+
+{% endblock %}

@@ -1,0 +1,11 @@
+<ipayMsg client="ipay" term="1" seqNum="0" time="2002-05-16 10:55:30 +0200">
+	<elecMsg ver="2.40">
+		<vendReq>
+			<ref>136105500001</ref>
+			<amt cur="KES">20</amt>
+			<numTokens>1</numTokens>
+			<meter>01450344831</meter>
+			<payType>cash</payType>
+		</vendReq >
+	</elecMsg>
+</ipayMsg>

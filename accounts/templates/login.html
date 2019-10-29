@@ -1,0 +1,26 @@
+{% extends "layouts/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block app_content %}
+
+<div class="login-box">
+  <div class="login-logo">
+    <a href="{% url 'accounts:login' %}"><b>Pawapins</a>
+  </div>
+  <!-- /.login-logo -->
+  <div class="login-box-body">
+    <p class="login-box-msg">Sign In</p>
+
+    {% block form %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy  }}
+            <button type="submit" class="btn btn-success">Sign In</button>
+        </form>
+    {% endblock %}
+     <a href="{% url 'accounts:forgot_password' %}">forgot password</a><br>
+       </div>
+  <!-- /.login-box-body -->
+</div>
+
+{% endblock %}
