@@ -123,22 +123,16 @@ def move_to_live(request, id):
         logging.exception(e)
 
 
+@login_required
+def print_csv(request):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="active_pins.csv"'
 
-# @login_required
-# def print_csv(request):
-#     # Create the HttpResponse object with the appropriate CSV header.
-#     response = HttpResponse(content_type='text/csv')
-#     response['Content-Disposition'] = 'attachment; filename="active_pins.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['Pin', 'Amount'])
+    cards = Card.objects.filter(pin=pin, status=0).all()
+    for card in cards:
+        writer.writerow([card.pin, card.batch.denomination])
 
-#     cards = Card.objects.filter(pin=pin, status=0).all()
-
-#     writer = csv.writer(response)
-#     for card in cards:
-#         writer.writerow([card.pin, , card.batch.denomination, 'Bar', 'Baz'])
-
-#     return response
-#     status = models.IntegerField(default=0, blank=True)
-#     sid = models.CharField(max_length=60, blank=True, null=True, db_index=True)
-#     created_at = models.DateTimeField(auto_now_add=True, blank=True)
-#     used_at = models.DateTimeField(auto_now_add=True, blank=True)
-#     active = models.BooleanField(default=False, blank=True)
+    return response
