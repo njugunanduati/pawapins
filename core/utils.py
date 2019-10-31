@@ -13,7 +13,7 @@ __all__ = (
 def send_email(subject, template_name, context, to):
     if not to:
         return
-    body = render_to_string(template_name)
+    body = render_to_string(template_name, context)
     email = EmailMessage(
         subject=subject,
         body=body,

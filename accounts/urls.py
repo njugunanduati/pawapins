@@ -18,4 +18,6 @@ urlpatterns = [
     path("users/", UsersView.as_view(), name="users"),
     path("add_user/", AddUserView.as_view(), name="add_user"),
     path("edit_user/<int:id>/", EditUserView.as_view(), name="edit_user"),
+
 ]
+

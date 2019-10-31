@@ -27,7 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '173.230.137.108', 
-    '127.0.0.1'
+    '127.0.0.1',
+    'localhost',
     ]
 
 
@@ -122,7 +123,6 @@ AUTH_PASSWORD_VALIDATORS = [
 # Email settings
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
-# DEFAULT_FROM_EMAIL = "info@willbox.tk"
 
 EMAIL_HOST = ENV.str("EMAIL_HOST")
 EMAIL_PORT = ENV.int("EMAIL_PORT", )

@@ -16,6 +16,7 @@ def send_forgot_password_request(user, reset_password_token):
         "accounts:reset_password",
         kwargs=dict(reset_token=str(reset_password_token)),
     )
+    print("+++",  build_absolute_url(reset_password_path))
 
     subject = "Reset your {site_name} password".format(
         site_name=settings.SITE_NAME
