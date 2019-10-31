@@ -100,6 +100,3 @@ class VendView(View):
 			pass
 		else:
 			pass
-		# change the pin status to used
-		# return HttpResponse(ipay_connect.make_vend())
-
