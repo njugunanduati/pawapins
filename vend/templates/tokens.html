@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+
+{% block app_content %}
+
+    <table id="users_table" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Reference</th>
+                <th>Address</th>
+                <th>Token</th>
+                <th>Units</th>
+                <th>Phone Number</th>
+                <th>Meter</th>
+                <th>Amount</th>
+                <th>Pin</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for token in tokens %}
+            <tr>
+                <td>
+                    {{ token.reference }}
+                </td>
+                <td>
+                    {{ token.address }}
+                </td>
+                <td>
+                    {{ token.token }}
+                </td>
+                <td>
+                    {{ token.units }}
+                </td>
+                <td>
+                    {{ token.phone_number }}
+                </td>
+                <td>
+                    {{ token.meter }}
+                </td>
+                <td>
+                    {{ token.amount_paid }}
+                </td>
+                <td>
+                    {{ token.pin }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

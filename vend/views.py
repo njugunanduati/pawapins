@@ -42,6 +42,16 @@ class SmsSentView(LoginRequiredMixin, TemplateView):
         return context
 
 
+class TokenView(LoginRequiredMixin, TemplateView):
+    template_name = "tokens.html"
+    title = 'Tokens'
+
+    def get_context_data(self, **kwargs):
+        context = super(TokenView, self).get_context_data(**kwargs)
+        context["tokens"] = Token.objects.all()
+        context["title"] = self.title
+        return context
+
 class SmsView(View):
 
 	def post(self, request):
