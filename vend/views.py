@@ -15,9 +15,31 @@ from .ipay import IpayConnect
 from config import settings
 from .utils import get_rand
 
-from .models import Token, Reversal, Sms
+from .models import Token, Reversal, Sms, SmsSent
 from pins.models import Subscriber, Card
 from .sms import send_sms
+
+
+class SmsRecievedView(LoginRequiredMixin, TemplateView):
+    template_name = "sms.html"
+    title = 'Sms Recieved'
+
+    def get_context_data(self, **kwargs):
+        context = super(SmsRecievedView, self).get_context_data(**kwargs)
+        context["sms"] = Sms.objects.all()
+        context["title"] = self.title
+        return context
+
+
+class SmsSentView(LoginRequiredMixin, TemplateView):
+    template_name = "sms_sent.html"
+    title = 'Sms Sent'
+
+    def get_context_data(self, **kwargs):
+        context = super(SmsSentView, self).get_context_data(**kwargs)
+        context["sms"] = SmsSent.objects.all()
+        context["title"] = self.title
+        return context
 
 
 class SmsView(View):

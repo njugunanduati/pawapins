@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+
+{% block app_content %}
+
+    <table id="users_table" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Phone Number</th>
+                <th>Message</th>
+                <th>Cost</th>
+                <th>Status</th>
+                <th>Message Id</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in sms %}
+            <tr>
+                <td>
+                    {{ s.msisdn }}
+                </td>
+                <td>
+                    {{ s.message }}
+                </td>
+                <td>
+                    {{ s.cost }}
+                </td>
+                <td>
+                    {{ s.status }}
+                </td>
+                <td>
+                    {{ s.message_id }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
