@@ -69,4 +69,3 @@ class CardPreview(TimeStampedModel):
 
     def __repr__(self):
         return self.pin
-

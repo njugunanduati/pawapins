@@ -20,5 +20,4 @@ class AddCardBatchForm(forms.Form):
 
 
 class SearchPinForm(forms.Form):
-    serial = forms.IntegerField(required=False, label='Serial')
     pin = forms.IntegerField(required=False, label='Pin')

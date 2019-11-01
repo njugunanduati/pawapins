@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block app_content %}
+
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#Batch.</th>
+                <th>Pin</th>
+                <th>Status</th>
+                <th>Used by</th>
+                <th>Sid</th>
+                <th>Created Date</th>
+                <th>Used At</th>
+                <th>Active</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    {{ pin.batch.id }}
+                </td>
+                <td>
+                    {{ pin.pin }}
+                </td>
+                <td>
+                    {{ pin.status }}
+                </td>
+                <td>
+                    {{ pin.used_by }}
+                </td>
+                <td>
+                    {{ pin.sid }}
+                </td>
+                <td>
+                    {{ pin.created_at }}
+                </td>
+                <td>
+                    {{ pin.used_at }}
+                </td>
+                <td>
+                    {{ pin.active }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="row">
+        <div class="col-sm-12">
+ 
+        </div>
+    </div>
+
+
+
+{% endblock  %}

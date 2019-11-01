@@ -77,27 +77,24 @@ class ShowPinsView(LoginRequiredMixin, TemplateView):
         context = super(ShowPinsView, self).get_context_data(**kwargs)
         context["form"] = self.form
         context["title"] = self.title
-        paginator = Paginator(self.pins, 10)
+        paginator = Paginator(self.pins.filter(batch=kwargs['id']), 10)
         pins = paginator.get_page(page)
         context["pins"] = pins
         return context
     
     def post(self, request, id):
-        form = AddCardBatchForm(data=request.POST)
+        form = self.form(data=request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            serial = data["serial"]
             pin = data["pin"]
-            if serial:
-                pins = pins.filter(id__startswith=serial)
-            elif pin:
-                pins = pins.filter(pin__startswith=pin)
+            if pin:
+                pins = self.pins.filter(pin__startswith=pin)
             pins = pins.order_by('id')
             return self.render_to_response(self.get_context_data(
                 form=form, pins=pins
             ))
         else:
-            return HttpResponseRedirect(reverse('pins:batch'))
+            return HttpResponseRedirect(reverse('card:batch'))
 
 @login_required
 def move_to_live(request, id):
