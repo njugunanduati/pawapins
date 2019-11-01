@@ -19,7 +19,7 @@ from django.contrib.auth.models import User
 from twisted.internet import reactor
 
 from pins.models import Card, CardBatch, CardPreview
-from pins.forms import AddCardBatchForm, SearchPinForm
+from pins.forms import AddCardBatchForm, SearchPinForm, PrintPinCsvForm
 from pins import utils
 
 
@@ -70,14 +70,15 @@ class ShowPinsView(LoginRequiredMixin, TemplateView):
     template_name = "pins.html"
     title = "Show Pins"
     form = SearchPinForm
-    pins = Card.objects.all()
+    pins = Card.objects.get_queryset().order_by('id')
 
     def get_context_data(self, **kwargs):
         page = self.request.GET.get('page')
         context = super(ShowPinsView, self).get_context_data(**kwargs)
         context["form"] = self.form
         context["title"] = self.title
-        paginator = Paginator(self.pins.filter(batch=kwargs['id']), 10)
+        cards = self.pins.filter(batch=kwargs['id'])
+        paginator = Paginator(cards, 10)
         pins = paginator.get_page(page)
         context["pins"] = pins
         return context
@@ -120,16 +121,35 @@ def move_to_live(request, id):
         logging.exception(e)
 
 
-@login_required
-def print_csv(request):
-    # Create the HttpResponse object with the appropriate CSV header.
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="active_pins.csv"'
 
-    writer = csv.writer(response)
-    writer.writerow(['Pin', 'Amount'])
-    cards = Card.objects.filter(pin=pin, status=0).all()
-    for card in cards:
-        writer.writerow([card.pin, card.batch.denomination])
+class GetPinCsvView(LoginRequiredMixin, TemplateView):
+    template_name = "pins_csv.html"
+    title = "Print Pins CSV"
+    form = PrintPinCsvForm
+    pins = CardPreview.objects.all()
 
-    return response
+    def get_context_data(self, **kwargs):
+        page = self.request.GET.get('page')
+        context = super(GetPinCsvView, self).get_context_data(**kwargs)
+        context["form"] = self.form
+        context["title"] = self.title
+        return context
+
+    def post(self, request):
+        # Create the HttpResponse object with the appropriate CSV header.
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="active_pins.csv"'
+
+        form = self.form(data=request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            amount = data["amount"]
+            batch = CardBatch.objects.filter(denomination=amount).first()
+            pins = self.pins.filter(batch=batch.id, status=0).order_by('id')
+            writer = csv.writer(response)
+            writer.writerow(['Pin', 'Amount'])
+            for p in pins:
+                writer.writerow([str(p.pin), p.batch.denomination])
+            return response
+        else:
+            return HttpResponseRedirect(reverse('card:batch'))

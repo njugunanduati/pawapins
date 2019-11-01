@@ -45,7 +45,7 @@ class Card(TimeStampedModel):
     serial = id/pk
     status: 0=unused  1=used 2=invalid/expired, 3=invalid/caceled
     '''
-    pin = models.TextField(unique=True)
+    pin = models.CharField(max_length=50,unique=True)
     batch = models.ForeignKey(CardBatch, on_delete=models.CASCADE)
     status = models.IntegerField(default=0, blank=True)
     used_by = models.CharField(max_length=20, blank=True, null=True)
@@ -62,7 +62,7 @@ class Card(TimeStampedModel):
 class CardPreview(TimeStampedModel):
     # TODO indenx the pin field
     # printed 0=default 1=printed
-    pin = models.CharField(max_length=20, unique=True)
+    pin = models.CharField(max_length=50, unique=True)
     batch = models.ForeignKey(CardBatch, on_delete=models.CASCADE)
     status = models.IntegerField(default=0, blank=True)
     printed = models.IntegerField(default=0, blank=True)

@@ -20,4 +20,8 @@ class AddCardBatchForm(forms.Form):
 
 
 class SearchPinForm(forms.Form):
-    pin = forms.IntegerField(required=False, label='Pin')
+    pin = forms.IntegerField(required=True, label='Pin')
+
+
+class PrintPinCsvForm(forms.Form):
+    amount = forms.IntegerField(required=True, label='Amount')

@@ -1,6 +1,6 @@
 from django.urls import path, include
 
-from pins.views import BatchView, AddBatchView, ShowPinsView, move_to_live, print_csv
+from pins.views import BatchView, AddBatchView, ShowPinsView, GetPinCsvView, move_to_live
 
 app_name = "pins"
 
@@ -9,5 +9,5 @@ urlpatterns = [
     path("addbatch/", AddBatchView.as_view(), name="add_batch"),
     path("showpinbatch/<int:id>/", ShowPinsView.as_view(), name="show_pins"),
     path("movetolive/<int:id>/", move_to_live, name="move_to_live"),
-    path("print_csv", print_csv, name="print_csv"),
+    path("get_csv", GetPinCsvView.as_view(), name="get_csv"),
 ]
