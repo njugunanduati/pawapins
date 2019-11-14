@@ -65,7 +65,7 @@ class SmsView(View):
 	my_ref = get_rand()
 
 	def post(self, request, *args, **kwargs):
-		data = json.dumps(request.body)
+		data = json.loads(request.body)
 		date_recieved = data['date']
 		msisdn = data['from']
 		at_id = data['id']
