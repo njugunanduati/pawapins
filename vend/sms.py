@@ -11,4 +11,4 @@ def send_sms(message, msidn):
         sms = africastalking.SMS
         return sms.send(message, [msidn])
     except Exception as e:
-        raise 'The sms error : {}'.format(str(e))
+        return 'The sms error : {}'.format(str(e))

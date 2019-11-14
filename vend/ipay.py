@@ -103,11 +103,9 @@ class IpayConnect:
 			resp = s.recv(2048)
 			print ("Response received : %s" % time.ctime())
 			data = un_wrap(resp)
-			print(data)
 			root = etree.fromstring(data)
 			my_dict = {}
 			for element in root.iter():
-				print(element.attrib)
 				if element.tag == 'ipayMsg':
 					my_dict['vend_time'] = element.get('time')
 				if element.tag == 'res':
@@ -126,9 +124,8 @@ class IpayConnect:
 					my_dict['description'] = element.get('desc')
 					my_dict['rct_num'] = element.get('rctNum')
 				data = my_dict
-			print(data)
 			s.close()
-			return json.dumps(data)
+			return data
 		except Exception as e:
 			return str(e)
 

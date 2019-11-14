@@ -10,6 +10,8 @@ from django.urls import reverse
 from django.views.generic import TemplateView
 from django.contrib import messages
 from django.views.generic.base import View
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from .ipay import IpayConnect
 from config import settings
@@ -52,16 +54,25 @@ class TokenView(LoginRequiredMixin, TemplateView):
         context["title"] = self.title
         return context
 
+@method_decorator(csrf_exempt, name='dispatch')
 class SmsView(View):
+	client = settings.CLIENT
+	term = settings.TERMINAL
+	ip = settings.IP
+	port = settings.PORT
+	buffer_size = settings.BUFFER_SIZE
+	today = settings.date_today
+	my_ref = get_rand()
 
-	def post(self, request):
-		date_recieved = request.POST['date']
-		msisdn = request.POST['from']
-		at_id = request.POST['id']
-		link_id = request.POST['linkId']
-		message = request.POST['text']
-		to = request.POST['to']
-		network_code = request.POST['networkCode']
+	def post(self, request, *args, **kwargs):
+		data = json.loads(request.body)
+		date_recieved = data['date']
+		msisdn = data['from']
+		at_id = data['id']
+		link_id = data['linkId']
+		message = data['text']
+		to = data['to']
+		network_code = data['networkCode']
 		sms = Sms(
 			date_recieved=date_recieved,
 			msisdn=msisdn,
@@ -72,37 +83,23 @@ class SmsView(View):
 			network_code=network_code
 			)
 		sms.save()
+		data = {} 
 		data['msisdn'] = msisdn
 		data['message'] = message
-		return HttpResponseRedirect(reverse('vend', args=(),
-			kwargs={'msisdn' : msisdn, 'message' : message }))
-
-
-
-class VendView(View):
-	client = settings.CLIENT
-	term = settings.TERMINAL
-	ip = settings.IP
-	port = settings.PORT
-	buffer_size = settings.BUFFER_SIZE
-	today = settings.date_today
-	my_ref = get_rand()
-
-	def get(self, request):
-		msisdn = request.GET['msisdn']
-		message = request.GET['message']
-		data = message.split('#')
-		pin = data[0]
-		meter = data[1]
-		card = Card.objects.filter(pin=pin, status=0).get()
-		amount = card.batch.denomination
-		ipay_connect = IpayConnect(self.ip, self.port, self.client, self.term, meter, amount, self.today, self.my_ref)
-		vend = ipay_connect.make_vend()
-		if vend['code'] == "elec000":
-			card = Card.objects.filter(pin=pin).get()
+		try:
+			msisdn = data['msisdn']
+			message = data['message']
+			data = message.split('#')
+			pin = data[0]
+			meter = data[1]
+			card = Card.objects.filter(pin=pin, status=0).get()
+			amount = card.batch.denomination
+			ipay_connect = IpayConnect(
+				self.ip, self.port, self.client, self.term, meter, amount, self.today, self.my_ref)
+			vend = ipay_connect.make_vend()
 			card.status = 1
-			used_by = msisdn
-			active=False
+			card.used_by = msisdn
+			card.active=False
 			card.save()
 			# save the vend data
 			token = Token(
@@ -125,10 +122,9 @@ class VendView(View):
 			token.save()
 			# send sms
 			message = 'Meter: {}, Token: {}, Amount: {}'.format(meter, vend['token'], amount)
-			return HttpResponse(send_sms(message, msisdn))
-		elif vend['code'] == "elec003":
-			pass
-		elif vend['code'] == "elec004":
-			pass
-		else:
-			pass
+			msg = send_sms(message, msisdn)
+			result = {"status": "Success", "message": data}
+			return JsonResponse(result)
+		except Exception as e:
+			result = {"status": "Error", "message": str(e)}
+			return JsonResponse(result)

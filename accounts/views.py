@@ -2,6 +2,7 @@ import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import redirect
 from django.contrib.auth.password_validation import CommonPasswordValidator
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -18,7 +19,7 @@ from .forms import (
     ChangePasswordForm, LoginForm)
 from .emails import send_forgot_password_request, send_change_password
 
-
+        
 
 class LoginView(TemplateView):
     template_name = "login.html"

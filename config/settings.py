@@ -153,7 +153,10 @@ STATIC_URL = '/static/'
 
 SITE_NAME = "PawaPins"
 BASE_URL = ENV.str("BASE_URL", "")
-LOGIN_REDIRECT_URL = "/accounts/dashboard/"
+
+
+# LOGIN_REDIRECT_URL = 'dashboard'
+# LOGOUT_REDIRECT_URL = 'login'
 
 
 # bizswitch credentials
