@@ -66,7 +66,7 @@ class SmsView(View):
 
 	def post(self, request, *args, **kwargs):
 		print(request.body)
-		data = json.loads((request.body)decode("utf-8"))
+		data = json.loads((request.body).decode("utf-8"))
 		print(data)
 		date_recieved = data['date']
 		msisdn = data['from']
