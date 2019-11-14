@@ -91,7 +91,8 @@ class SmsView(View):
 			msisdn = data['msisdn']
 			message = data['message']
 			data = message.split('#')
-			pin = data[0]
+			pin = data[0].split(' ')
+			pin = pin[1]
 			meter = data[1]
 			card = Card.objects.filter(pin=pin, status=0).get()
 			amount = card.batch.denomination
