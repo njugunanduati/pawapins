@@ -25,7 +25,6 @@ class Token(TimeStampedModel):
 	"""
 	vend_time = models.CharField(max_length=300, null=False) 
 	reference = models.CharField(max_length=50, null=False) 
-	code = models.CharField(max_length=50, null=False) 
 	address = models.CharField(max_length=150, null=False) 
 	token = models.CharField(max_length=150, null=False) 
 	units = models.CharField(max_length=150, null=False)
