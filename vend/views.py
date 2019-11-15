@@ -90,7 +90,6 @@ class SmsView(View):
 			network_code=network_code
 			)
 		sms.save()
-		print("sms", sms)
 		data = {} 
 		data['msisdn'] = msisdn
 		data['message'] = message
@@ -126,7 +125,8 @@ class SmsView(View):
 				rct_num=vend['rct_num'],
 				meter=meter,
 				amount_paid=amount,
-				pin=pin
+				pin=pin,
+				phone_number=msisdn
 			)
 			token.save()
 			# send sms
