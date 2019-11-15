@@ -4,6 +4,9 @@ import pytz
 from datetime import datetime, timedelta, timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework.response import Response
 from django.urls import reverse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -55,7 +58,7 @@ class TokenView(LoginRequiredMixin, TemplateView):
         return context
 
 @method_decorator(csrf_exempt, name='dispatch')
-class SmsView(View):
+class SmsView(APIView):
 	client = settings.CLIENT
 	term = settings.TERMINAL
 	ip = settings.IP
@@ -133,8 +136,8 @@ class SmsView(View):
 			# send sms
 			message = 'Meter: {}, Token: {}, Amount: Ksh {}, Units: {}'.format(meter, vend['token'], amount, vend['units'])
 			msg = send_sms(message, msisdn)
-			result = {"status": 200, "message": "The token has been sent to the user"}
-			return JsonResponse(result)
+			content = {"message": "The token has been sent to the user"}
+			return Response(content, status=status.HTTP_200_OK)
 		except Exception as e:
-			result = {"status": 500, "message": str(e)}
-			return JsonResponse(result)
+			content = {"message": str(e)}
+			return Response(content, status=status.HTTP_200_OK)
