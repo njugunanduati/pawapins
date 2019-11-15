@@ -133,8 +133,8 @@ class SmsView(View):
 			# send sms
 			message = 'Meter: {}, Token: {}, Amount: Ksh {}, Units: {}'.format(meter, vend['token'], amount, vend['units'])
 			msg = send_sms(message, msisdn)
-			result = {"status": "Success", "message": "The token has been sent to the user"}
-			return HttpResponse(result)
+			result = {"status": 200, "message": "The token has been sent to the user"}
+			return JsonResponse(result)
 		except Exception as e:
-			result = {"status": "Error", "message": str(e)}
-			return HttpResponse(result)
+			result = {"status": 500, "message": str(e)}
+			return JsonResponse(result)
