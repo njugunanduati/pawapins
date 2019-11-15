@@ -69,7 +69,7 @@ class SmsView(View):
 
 	def post(self, request, *args, **kwargs):
 		data = request.POST
-		# print("data", data)
+		print("data", data)
 		date_recieved = data['date']
 		msisdn = data['from']
 		at_id = data['id']
@@ -90,6 +90,7 @@ class SmsView(View):
 			network_code=network_code
 			)
 		sms.save()
+		print("sms", sms)
 		data = {} 
 		data['msisdn'] = msisdn
 		data['message'] = message
@@ -131,6 +132,7 @@ class SmsView(View):
 			# send sms
 			message = 'Meter: {}, Token: {}, Amount: Ksh {}, Units: {}'.format(meter, vend['token'], amount, vend['units'])
 			msg = send_sms(message, msisdn)
+			print("msg", msg)
 			content = {"message": "The token has been sent to the user"}
 			return JsonResponse(content, status=status.HTTP_200_OK)
 		except Exception as e:
