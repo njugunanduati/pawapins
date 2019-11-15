@@ -4,6 +4,7 @@ import pytz
 from datetime import datetime, timedelta, timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
@@ -93,48 +94,63 @@ class SmsView(View):
 		data = {} 
 		data['msisdn'] = msisdn
 		data['message'] = message
+		msisdn = data['msisdn']
+		message = data['message']
+		data = message.split('#')
+		pin = data[0].split(' ')
+		pin = pin[1]
+		meter = data[1]
+
 		try:
-			msisdn = data['msisdn']
-			message = data['message']
-			data = message.split('#')
-			pin = data[0].split(' ')
-			pin = pin[1]
-			meter = data[1]
 			card = Card.objects.filter(pin=pin, status=0).get()
-			amount = card.batch.denomination
-			ipay_connect = IpayConnect(
-				self.ip, self.port, self.client, self.term, meter, amount, self.today, self.my_ref)
-			vend = ipay_connect.make_vend()
-			card.status = 1
-			card.used_by = msisdn
-			card.active=False
+		except ObjectDoesNotExist:
+			return JsonResponse({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+		
+		amount = card.batch.denomination
+		ipay_connect = IpayConnect(
+			self.ip, self.port, self.client, self.term, meter, amount, self.today, self.my_ref)
+		vend = ipay_connect.make_vend()
+		card.status = 1
+		card.used_by = msisdn
+		card.active=False
+
+		try:
 			card.save()
-			# save the vend data
-			token = Token(
-				vend_time=vend['vend_time'],
-				reference=vend['reference'],
-				address=vend['address'],
-				code=vend['code'],
-				token=vend['token'],
-				units=vend['units'],
-				units_type=vend['units_type'],
-				amount=vend['amount'],
-				tax=vend['tax'],
-				tarrif=vend['tarrif'],
-				description=vend['description'],
-				rct_num=vend['rct_num'],
-				meter=meter,
-				amount_paid=amount,
-				pin=pin,
-				phone_number=msisdn
-			)
-			token.save()
-			# send sms
-			message = 'Meter: {}, Token: {}, Amount: Ksh {}, Units: {}'.format(meter, vend['token'], amount, vend['units'])
-			msg = send_sms(message, msisdn)
-			print("msg", msg)
-			content = {"message": "The token has been sent to the user"}
-			return JsonResponse(content, status=status.HTTP_200_OK)
 		except Exception as e:
-			content = {"message": str(e)}
-			return JsonResponse(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+			content = "Error updating pin details"
+			return HttpResponse(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+		card.save()
+		# save the vend data
+		print("vend", vend)
+		
+		token = Token(
+			vend_time=vend['vend_time'],
+			reference=vend['reference'],
+			address=vend['address'],
+			code=vend['code'],
+			token=vend['token'],
+			units=vend['units'],
+			units_type=vend['units_type'],
+			amount=vend['amount'],
+			tax=vend['tax'],
+			tarrif=vend['tarrif'],
+			description=vend['description'],
+			rct_num=vend['rct_num'],
+			meter=meter,
+			amount_paid=amount,
+			pin=pin,
+			phone_number=msisdn
+		)
+
+		try:
+			token.save()
+		except Exception as e:
+			content = "Error generating the token"
+			return HttpResponse(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+		# send sms
+		message = 'Meter: {}, Token: {}, Amount: Ksh {}, Units: {}'.format(meter, vend['token'], amount, vend['units'])
+		msg = send_sms(message, msisdn)
+		print("msg", msg)
+		content = "The token has been sent to the user"
+		return HttpResponse(content, status=status.HTTP_200_OK)
