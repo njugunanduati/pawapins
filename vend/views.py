@@ -123,25 +123,26 @@ class SmsView(View):
 		card.save()
 		# save the vend data
 		print("vend", vend)
-		
+
 		token = Token(
 			vend_time=vend['vend_time'],
 			reference=vend['reference'],
 			address=vend['address'],
 			code=vend['code'],
 			token=vend['token'],
-			units=vend['units'],
+			units=round(vend['units'], 2),
 			units_type=vend['units_type'],
 			amount=vend['amount'],
 			tax=vend['tax'],
 			tarrif=vend['tarrif'],
 			description=vend['description'],
 			rct_num=vend['rct_num'],
+			phone_number=msisdn,
 			meter=meter,
 			amount_paid=amount,
-			pin=pin,
-			phone_number=msisdn
+			pin=pin
 		)
+
 
 		try:
 			token.save()
@@ -149,7 +150,7 @@ class SmsView(View):
 			content = "Error generating the token"
 			return HttpResponse(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 		# send sms
-		message = 'Meter: {}, Token: {}, Amount: Ksh {}, Units: {}'.format(meter, vend['token'], amount, vend['units'])
+		message = 'Meter: {}, Token: {}, Amount: Ksh {}, Units: {}'.format(meter, vend['token'], amount, token.units)
 		msg = send_sms(message, msisdn)
 		print("msg", msg)
 		content = "The token has been sent to the user"
