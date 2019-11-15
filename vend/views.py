@@ -68,10 +68,16 @@ class SmsView(View):
 		data = request.POST
 		print("data", data)
 		date_recieved = data['date']
-		cost = data['cost'] 
+		if data['cost']:
+			cost = data['cost']
+		else:
+			cost = 0 
 		msisdn = data['from']
 		at_id = data['id']
-		link_id = data['linkId']
+		if data['linkId']:
+			link_id = data['linkId']
+		else:
+			link_id = 0
 		message = data['text']
 		to = data['to']
 		network_code = data['networkCode']
