@@ -58,7 +58,7 @@ class TokenView(LoginRequiredMixin, TemplateView):
         return context
 
 @method_decorator(csrf_exempt, name='dispatch')
-class SmsView(APIView):
+class SmsView(View):
 	client = settings.CLIENT
 	term = settings.TERMINAL
 	ip = settings.IP
@@ -137,7 +137,7 @@ class SmsView(APIView):
 			message = 'Meter: {}, Token: {}, Amount: Ksh {}, Units: {}'.format(meter, vend['token'], amount, vend['units'])
 			msg = send_sms(message, msisdn)
 			content = {"message": "The token has been sent to the user"}
-			return Response(content, status=status.HTTP_200_OK)
+			return JsonResponse(content, status=status.HTTP_200_OK)
 		except Exception as e:
 			content = {"message": str(e)}
-			return Response(content, status=status.HTTP_200_OK)
+			return JsonResponse(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
