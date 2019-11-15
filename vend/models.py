@@ -14,6 +14,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from core.models import TimeStampedModel
 from django.conf import settings
+from config.settings import db_date
 import architect
 
 
@@ -68,9 +69,10 @@ class Sms(TimeStampedModel):
 	"""
 	date_recieved = models.CharField(max_length=300, null=True)
 	msisdn = models.CharField(max_length=20, null=True)
-	at_id = models.CharField(max_length=300, null=False)
-	link_id = models.CharField(max_length=300, null=False)
-	message = models.CharField(max_length=300, null=False)
+	at_id = models.CharField(max_length=300, null=True)
+	link_id = models.CharField(max_length=300, null=True)
+	cost = models.FloatField(default=0, null=True, blank=True)
+	message = models.CharField(max_length=300, null=True)
 	to = models.CharField(max_length=300, null=False)
 	network_code = models.CharField(max_length=300, null=False)
 

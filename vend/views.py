@@ -68,6 +68,7 @@ class SmsView(View):
 		data = request.POST
 		print("data", data)
 		date_recieved = data['date']
+		cost = data['cost'] 
 		msisdn = data['from']
 		at_id = data['id']
 		link_id = data['linkId']
@@ -76,6 +77,7 @@ class SmsView(View):
 		network_code = data['networkCode']
 		sms = Sms(
 			date_recieved=date_recieved,
+			cost=cost,
 			msisdn=msisdn,
 			at_id=at_id,
 			link_id=link_id,

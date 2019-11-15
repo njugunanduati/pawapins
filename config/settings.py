@@ -8,6 +8,8 @@ from datetime import datetime, timedelta, timezone
 # date 
 date_today = datetime.now(pytz.timezone('Africa/Nairobi')).strftime("%Y-%m-%d %H:%M:%S %z")
 
+db_date = datetime.now(pytz.timezone('Africa/Nairobi')).strftime("%Y-%m-%d %H:%M:%S")
+
 # read variables for .env file
 ENV = environ.Env()
 environ.Env.read_env(".env")
@@ -136,7 +138,7 @@ EMAIL_USE_TLS = ENV.bool("EMAIL_USE_TLS", True)
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Nairobi'
 
 USE_I18N = True
 

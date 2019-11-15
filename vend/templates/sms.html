@@ -8,6 +8,7 @@
             <tr>
                 <th>Date Recieved</th>
                 <th>Phone Number</th>
+                <th>AT ID</th>
                 <th>Link</th>
                 <th>Message</th>
                 <th>To</th>
@@ -17,6 +18,9 @@
         <tbody>
             {% for s in sms %}
             <tr>
+                <td>
+                    {{ s.date_recieved }}
+                </td>
                 <td>
                     {{ s.msisdn }}
                 </td>
