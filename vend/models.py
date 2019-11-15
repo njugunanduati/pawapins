@@ -14,7 +14,6 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from core.models import TimeStampedModel
 from django.conf import settings
-from config.settings import db_date
 import architect
 
 
@@ -93,36 +92,3 @@ class SmsSent(TimeStampedModel):
 
 	def __repr__(self):
 		return self.id
-
-
-
-def send_text_message(request):
-    if request.method == 'GET':
-        template_name = 'send_sms.html'
-        return render(request, template_name)
-    else:
-        phone = request.POST['phone_number']
-        message = request.POST['message']
-        try:
-            response = send_sms(phone, message)
-            data = response['SMSMessageData']['Recipients'][0]
-            sms = Sms.objects.create(
-                sender=request.user,
-                phone_number=data['number'],
-                message=message,
-                cost=data['cost'],
-                status=data['status'],
-                message_id=data['messageId']
-            )
-            sms.save()
-            return HttpResponseRedirect('/sms/sms/')
-        except Exception as e:
-            print("This is the error:" + str(e))
-
-# {
-#     'statusCode': 101, 
-#     'number': '+254729556997', 
-#     'cost': 'KES 0.8000',
-#     'status': 'Success', 
-#     'messageId': 'ATXid_c2f1aec156b318ff999de775d38bfbb9'
-# }

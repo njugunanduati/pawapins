@@ -12,3 +12,12 @@ def send_sms(message, msidn):
         return sms.send(message, [msidn])
     except Exception as e:
         return 'The sms error : {}'.format(str(e))
+
+
+# {
+#     'statusCode': 101, 
+#     'number': '+254729556997', 
+#     'cost': 'KES 0.8000',
+#     'status': 'Success', 
+#     'messageId': 'ATXid_c2f1aec156b318ff999de775d38bfbb9'
+# }

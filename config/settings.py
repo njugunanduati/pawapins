@@ -8,8 +8,6 @@ from datetime import datetime, timedelta, timezone
 # date 
 date_today = datetime.now(pytz.timezone('Africa/Nairobi')).strftime("%Y-%m-%d %H:%M:%S %z")
 
-db_date = datetime.now(pytz.timezone('Africa/Nairobi')).strftime("%Y-%m-%d %H:%M:%S")
-
 # read variables for .env file
 ENV = environ.Env()
 environ.Env.read_env(".env")

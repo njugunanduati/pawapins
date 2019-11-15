@@ -66,8 +66,7 @@ class SmsView(View):
 
 	def post(self, request, *args, **kwargs):
 		data = request.POST
-		print("data", data)
-		print("am here *****")
+		# print("data", data)
 		date_recieved = data['date']
 		if data['cost']:
 			cost = data['cost']
@@ -133,10 +132,9 @@ class SmsView(View):
 			token.save()
 			# send sms
 			message = 'Meter: {}, Token: {}, Amount: Ksh {}, Units: {}'.format(meter, vend['token'], amount, vend['units'])
-			print(message)
 			msg = send_sms(message, msisdn)
 			result = {"status": "Success", "message": "The token has been sent to the user"}
-			return JsonResponse(result)
+			return HttpResponse(result)
 		except Exception as e:
 			result = {"status": "Error", "message": str(e)}
-			return JsonResponse(result)
+			return HttpResponse(result)
