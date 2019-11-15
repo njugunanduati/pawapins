@@ -28,7 +28,7 @@ class Token(TimeStampedModel):
 	address = models.TextField(null=True) 
 	code = models.CharField(max_length=50, null=True, blank=True)
 	token = models.TextField(null=True) 
-	units = models.CharField(max_length=150, null=True)
+	units = models.DecimalField(default=0, max_digits=10, decimal_places=2)
 	units_type = models.CharField(max_length=150, null=True)
 	amount = models.CharField(max_length=30, null=True)
 	tax = models.CharField(max_length=30, null=True)

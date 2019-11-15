@@ -130,7 +130,7 @@ class SmsView(View):
 			address=vend['address'],
 			code=vend['code'],
 			token=vend['token'],
-			units=round(vend['units'], 2),
+			units=vend['units'],
 			units_type=vend['units_type'],
 			amount=vend['amount'],
 			tax=vend['tax'],
@@ -142,7 +142,6 @@ class SmsView(View):
 			amount_paid=amount,
 			pin=pin
 		)
-
 
 		try:
 			token.save()
