@@ -65,7 +65,7 @@ class SmsView(View):
 	my_ref = get_rand()
 
 	def post(self, request, *args, **kwargs):
-		data = json.loads((request.body).decode("utf-8"))
+		data = request.POST
 		print("data", data)
 		date_recieved = data['date']
 		msisdn = data['from']
@@ -123,7 +123,7 @@ class SmsView(View):
 			)
 			token.save()
 			# send sms
-			message = 'Meter: {}, Token: {}, Amount: {}'.format(meter, vend['token'], amount)
+			message = 'Meter: {}, Token: {}, Amount: Ksh {}, Units: {}'.format(meter, vend['token'], amount, vend['units'])
 			msg = send_sms(message, msisdn)
 			result = {"status": "Success", "message": "The token has been sent to the user"}
 			return JsonResponse(result)
