@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
@@ -19,7 +20,10 @@ from .forms import (
     ChangePasswordForm, LoginForm)
 from .emails import send_forgot_password_request, send_change_password
 
-        
+@login_required
+def home(request):
+    return HttpResponseRedirect(reverse("accounts:dashboard"))
+
 
 class LoginView(TemplateView):
     template_name = "login.html"
@@ -43,7 +47,6 @@ class LoginView(TemplateView):
             )
             if user:
                 if user.is_active is True:
-                    print(user)
                     login(request, user)
                     messages.success(request, "Successfully logged in. Welcome "+ user.email)
                     return HttpResponseRedirect(reverse("accounts:dashboard"))

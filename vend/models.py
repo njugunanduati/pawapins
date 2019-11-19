@@ -40,8 +40,8 @@ class Token(TimeStampedModel):
 	amount_paid = models.CharField(max_length=30, null=True)
 	pin = models.CharField(max_length=300, null=True)
 
-	def __repr__(self):
-		return self.id
+	def __str__(self):
+		return self.token
 
 
 @architect.install('partition', type='range', subtype='date', constraint='month', column='created')
@@ -75,8 +75,8 @@ class Sms(TimeStampedModel):
 	to = models.CharField(max_length=300, null=True)
 	network_code = models.CharField(max_length=300, null=True)
 
-	def __repr__(self):
-		return self.id
+	def __str__(self):
+		return self.message
 
 
 @architect.install('partition', type='range', subtype='date', constraint='month', column='created')

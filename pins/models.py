@@ -14,7 +14,7 @@ class Subscriber(TimeStampedModel):
                              blank=True)
     amount = models.IntegerField(default=0, blank=True)
 
-    def __repr__(self):
+    def __str__(self):
         return self.msisdn
 
 
@@ -31,8 +31,8 @@ class CardBatch(TimeStampedModel):
     status = models.IntegerField(default=0, blank=True)
     live = models.IntegerField(default=0, blank=True)
 
-    def __repr__(self):
-        return self.id
+    def __str__(self):
+        return str(self.denomination)
 
     @property
     def get_denomination(self):
@@ -54,7 +54,7 @@ class Card(TimeStampedModel):
     used_at = models.DateTimeField(auto_now_add=True, blank=True)
     active = models.BooleanField(default=False, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.pin
 
 
@@ -67,5 +67,5 @@ class CardPreview(TimeStampedModel):
     status = models.IntegerField(default=0, blank=True)
     printed = models.IntegerField(default=0, blank=True)
 
-    def __repr__(self):
+    def __str__(self):
         return self.pin
