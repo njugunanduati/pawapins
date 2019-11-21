@@ -172,6 +172,7 @@ BASE_URL = ENV.str("BASE_URL", "")
 # bizswitch credentials
 CLIENT = ENV.str("CLIENT", "")
 TERMINAL = ENV.str("TERMINAL", "")
+TERMINAL_REVERSAL = ENV.str("TERMINAL_REVERSAL", "")
 IP=ENV.str("IP", "")
 PORT=ENV.str("PORT", "")
 BUFFER_SIZE=ENV.str("BUFFER_SIZE", "")

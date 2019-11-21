@@ -1,5 +1,6 @@
 import json
 import pytz
+import time
 
 from datetime import datetime, timedelta, timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -68,9 +69,10 @@ def sms_post(request):
 	buffer_size = settings.BUFFER_SIZE
 	today = settings.date_today
 	my_ref = get_rand()
+	rev_ref = get_rand()
 
 	data = request.POST
-	print("data", data)
+	# print("data", data)
 	date_recieved = data['date']
 	msisdn = data['from']
 	at_id = data['id']
@@ -100,30 +102,51 @@ def sms_post(request):
 	pin = data[0].split(' ')
 	pin = pin[1]
 	meter = data[1]
-
 	try:
-		card = Card.objects.filter(pin=pin, status=0).get()
+		card = Card.objects.filter(pin=pin).get()
 	except ObjectDoesNotExist:
-		message = str(e)
-		return HttpResponse(message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+		message = 'Pin does not exist'
+		msg = send_sms(message, msisdn)
+		print("msg", msg)
+		return HttpResponse(message, status=status.HTTP_404_NOT_FOUND)
+	if card.status != 0:
+		message = 'Pin has already been used'
+		msg = send_sms(message, msisdn)
+		print("msg", msg)
+		return HttpResponse(message, status=status.HTTP_404_NOT_FOUND)
 	
 	amount = card.batch.denomination
 	ipay_connect = IpayConnect(
-		ip, port, client, term, meter, amount, today, my_ref)
+		ip, port, client, term, meter, amount, today, my_ref, rev_ref)
+
 	vend = ipay_connect.make_vend()
+	
+	# save the vend data
+	print("vend", vend)
+
+	if vend['code'] is 'elec001':
+		message = 'Incorrect meter number'
+		msg = send_sms(message, msisdn)
+		print("msg", msg)
+		return HttpResponse(message, status=status.HTTP_404_NOT_FOUND)
+	elif 'vend_rev_time' in vend:
+		message = 'Technical issue please try after some time'
+		card.save()
+		msg = send_sms(message, msisdn)
+		print("msg", msg)
+		return HttpResponse(message, status=status.HTTP_404_NOT_FOUND)
+	elif vend['code'] == 'elec003':
+		message = 'No record found'
+		card.save()
+		msg = send_sms(message, msisdn)
+		print("msg", msg)
+		return HttpResponse(message, status=status.HTTP_404_NOT_FOUND)
+
+	# update card details
 	card.status = 1
 	card.used_by = msisdn
 	card.active=False
-
-	try:
-		card.save()
-	except Exception as e:
-		message = "Error updating pin details"
-		return HttpResponse(message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 	card.save()
-	# save the vend data
-	print("vend", vend)
 
 	token = Token(
 		vend_time=vend['vend_time'],
@@ -148,7 +171,7 @@ def sms_post(request):
 		token.save()
 	except Exception as e:
 		message = "Error generating the token"
-		return HttpResponse(message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+		return HttpResponse(message, status=status.HTTP_404_NOT_FOUND)
 	# send sms
 	message = 'Meter: {}, Token: {}, Amount: Ksh {}, Units: {}'.format(meter, vend['token'], amount, token.units)
 	msg = send_sms(message, msisdn)
