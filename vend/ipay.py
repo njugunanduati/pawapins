@@ -6,7 +6,6 @@ import time
 import random
 import socket
 from lxml import etree
-from ttictoc import tic,toc
 from .utils import wrap, un_wrap, un_wrap_reverse, get_rand
 
 my_ref = get_rand()
