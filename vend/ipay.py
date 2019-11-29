@@ -137,9 +137,10 @@ class IpayConnect:
 			data_frame = self.create_reverse_vend()
 			req = s.send(data_frame)
 			print ("Reverse Response sent : %s" % time.ctime())
-			resp = s.recv(2048)
+			resp = s.recv(1024)
 			print ("Reverse Response received : %s" % time.ctime())
 			data = un_wrap_reverse(resp)
+			print("----", data)
 			if len(data) != 0:
 				root = etree.fromstring(data)
 				my_dict = {}
@@ -154,7 +155,6 @@ class IpayConnect:
 				s.close()
 				return data
 			else:
-				root = etree.fromstring(data)
 				my_dict = {}
 				my_dict['msg'] = "No funds available"
 				return my_dict
