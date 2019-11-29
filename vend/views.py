@@ -141,13 +141,13 @@ def sms_post(request):
 		msg = send_sms(message, msisdn)
 		print("msg", msg)
 		return HttpResponse(message, status=status.HTTP_200_OK)
-	elif 'msg' in vend:
-		message = 'Technical issue. Please try after some time'
-		card.save()
-		msg = send_sms(message, msisdn)
-		print("msg", msg)
-		print("no funds available in the accont")
-		return HttpResponse(message, status=status.HTTP_200_OK)
+	# elif 'msg' in vend:
+	# 	message = 'Technical issue. Please try after some time'
+	# 	card.save()
+	# 	msg = send_sms(message, msisdn)
+	# 	print("msg", msg)
+	# 	print("no funds available in the accont")
+	# 	return HttpResponse(message, status=status.HTTP_200_OK)
 
 	# update card details
 	card.status = 1

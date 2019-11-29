@@ -150,7 +150,3 @@ class IpayConnect:
 				data = my_dict
 			s.close()
 			return data
-		else:
-			my_dict = {}
-			my_dict['msg'] = "No funds available"
-			return my_dict
