@@ -99,6 +99,7 @@ class IpayConnect:
 		"""
 		s = self.create_socket()
 		data_frame = self.create_norm_vend()
+		print(data_frame)
 		try:
 			req = s.send(data_frame)
 			print ("Response sent : %s" % time.ctime())
