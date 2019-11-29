@@ -140,8 +140,7 @@ class IpayConnect:
 			resp = s.recv(1024)
 			print ("Reverse Response received : %s" % time.ctime())
 			data = un_wrap_reverse(resp)
-			print("----", data)
-			if len(data) != 0:
+			if data:
 				root = etree.fromstring(data)
 				my_dict = {}
 				for element in root.iter():
