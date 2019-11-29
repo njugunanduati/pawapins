@@ -33,7 +33,7 @@ class SmsRecievedView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(SmsRecievedView, self).get_context_data(**kwargs)
-        context["sms"] = Sms.objects.all()
+        context["sms"] = Sms.objects.all().order_by('-created')
         context["title"] = self.title
         return context
 
@@ -44,7 +44,7 @@ class SmsSentView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(SmsSentView, self).get_context_data(**kwargs)
-        context["sms"] = SmsSent.objects.all()
+        context["sms"] = SmsSent.objects.all().order_by('-created')
         context["title"] = self.title
         return context
 
@@ -55,7 +55,7 @@ class TokenView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(TokenView, self).get_context_data(**kwargs)
-        context["tokens"] = Token.objects.all()
+        context["tokens"] = Token.objects.all().order_by('-created')
         context["title"] = self.title
         return context
 
@@ -72,7 +72,7 @@ def sms_post(request):
 	rev_ref = get_rand()
 
 	data = request.POST
-	# print("data", data)
+	print("data", data)
 	date_recieved = data['date']
 	msisdn = data['from']
 	at_id = data['id']
