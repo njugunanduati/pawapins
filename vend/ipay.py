@@ -106,6 +106,7 @@ class IpayConnect:
 			resp = s.recv(2048)
 			print ("Response received : %s" % time.ctime())
 			data = un_wrap(resp)
+			print(data)
 			root = etree.fromstring(data)
 			my_dict = {}
 			for element in root.iter():
