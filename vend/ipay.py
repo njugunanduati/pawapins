@@ -105,14 +105,8 @@ class IpayConnect:
 			print ("Response sent : %s" % time.ctime())
 			resp = s.recv(2048)
 			print ("Response received : %s" % time.ctime())
-			print(resp)
+			print(len(resp))
 			data = un_wrap(resp)
-
-			if len(data) == 0:
-				my_dict = {}
-				my_dict['msg'] = "No funds available"
-				return my_dict
-
 			root = etree.fromstring(data)
 			my_dict = {}
 			for element in root.iter():
@@ -157,3 +151,7 @@ class IpayConnect:
 				data = my_dict
 			s.close()
 			return data
+		else:
+			my_dict = {}
+			my_dict['msg'] = "No funds available"
+			return my_dict
