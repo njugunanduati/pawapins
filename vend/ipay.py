@@ -130,7 +130,7 @@ class IpayConnect:
 				data = my_dict
 				s.close()
 			return data
-		except TimeoutError:
+		except Exception as e:
 			print("Didn't receive data! [Timeout]")
 			data_frame = self.create_reverse_vend()
 			req = s.send(data_frame)
