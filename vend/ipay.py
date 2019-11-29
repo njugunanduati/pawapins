@@ -140,15 +140,22 @@ class IpayConnect:
 			resp = s.recv(2048)
 			print ("Reverse Response received : %s" % time.ctime())
 			data = un_wrap_reverse(resp)
-			root = etree.fromstring(data)
-			my_dict = {}
-			for element in root.iter():
-				if element.tag == 'ipayMsg':
-					my_dict['vend_rev_time'] = element.get('time')
-				if element.tag == 'ref':
-					my_dict['ref'] = element.text
-				if element.tag == 'res':
-					my_dict['code'] = element.get('code')
-				data = my_dict
-			s.close()
-			return data
+			if len(data) != 0:
+				root = etree.fromstring(data)
+				my_dict = {}
+				for element in root.iter():
+					if element.tag == 'ipayMsg':
+						my_dict['vend_rev_time'] = element.get('time')
+					if element.tag == 'ref':
+						my_dict['ref'] = element.text
+					if element.tag == 'res':
+						my_dict['code'] = element.get('code')
+					data = my_dict
+				s.close()
+				return data
+			else:
+				root = etree.fromstring(data)
+				my_dict = {}
+				my_dict['msg'] = "No funds available"
+				return my_dict
+
