@@ -107,8 +107,13 @@ class IpayConnect:
 			print ("Response received : %s" % time.ctime())
 			print(resp)
 			data = un_wrap(resp)
+
+			if len(data) == 0:
+				my_dict = {}
+				my_dict['msg'] = "No funds available"
+				return my_dict
+
 			root = etree.fromstring(data)
-			print(root)
 			my_dict = {}
 			for element in root.iter():
 				if element.tag == 'ipayMsg':
@@ -140,21 +145,15 @@ class IpayConnect:
 			resp = s.recv(1024)
 			print ("Reverse Response received : %s" % time.ctime())
 			data = un_wrap_reverse(resp)
-			if data:
-				root = etree.fromstring(data)
-				my_dict = {}
-				for element in root.iter():
-					if element.tag == 'ipayMsg':
-						my_dict['vend_rev_time'] = element.get('time')
-					if element.tag == 'ref':
-						my_dict['ref'] = element.text
-					if element.tag == 'res':
-						my_dict['code'] = element.get('code')
-					data = my_dict
-				s.close()
-				return data
-			else:
-				my_dict = {}
-				my_dict['msg'] = "No funds available"
-				return my_dict
-
+			root = etree.fromstring(data)
+			my_dict = {}
+			for element in root.iter():
+				if element.tag == 'ipayMsg':
+					my_dict['vend_rev_time'] = element.get('time')
+				if element.tag == 'ref':
+					my_dict['ref'] = element.text
+				if element.tag == 'res':
+					my_dict['code'] = element.get('code')
+				data = my_dict
+			s.close()
+			return data
