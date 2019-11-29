@@ -33,6 +33,7 @@ def un_wrap(data):
 	"""
 	unwrap the message
 	"""
+	print("---", data)
 	message = data.decode('utf-8')
 	return message[2:]
 
@@ -43,6 +44,6 @@ def un_wrap_reverse(data):
 	"""
 	unwrap the message
 	"""
-	print(len(data))
+	print(data)
 	message = data.decode('utf-8', 'backslashreplace')
 	return message[5:]
