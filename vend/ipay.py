@@ -105,9 +105,10 @@ class IpayConnect:
 			print ("Response sent : %s" % time.ctime())
 			resp = s.recv(2048)
 			print ("Response received : %s" % time.ctime())
+			print(resp)
 			data = un_wrap(resp)
-			print(data)
 			root = etree.fromstring(data)
+			print(root)
 			my_dict = {}
 			for element in root.iter():
 				if element.tag == 'ipayMsg':
