@@ -100,7 +100,6 @@ class IpayConnect:
 		s = self.create_socket()
 		data_frame = self.create_norm_vend()
 		try:
-			s.settimeout(20)
 			req = s.send(data_frame)
 			print ("Response sent : %s" % time.ctime())
 			resp = s.recv(2048)
@@ -130,9 +129,8 @@ class IpayConnect:
 				data = my_dict
 				s.close()
 			return data
-		except Exception as e:
+		except TimeoutError:
 			print("Didn't receive data! [Timeout]")
-			s.settimeout(None)
 			data_frame = self.create_reverse_vend()
 			req = s.send(data_frame)
 			print ("Reverse Response sent : %s" % time.ctime())
