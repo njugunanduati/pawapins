@@ -108,12 +108,12 @@ def sms_post(request):
 		message = 'Pin does not exist'
 		msg = send_sms(message, msisdn)
 		print("msg", msg)
-		return HttpResponse(message, status=status.HTTP_404_NOT_FOUND)
+		return HttpResponse(message, status=status.HTTP_200_OK)
 	if card.status != 0:
 		message = 'Pin has already been used'
 		msg = send_sms(message, msisdn)
 		print("msg", msg)
-		return HttpResponse(message, status=status.HTTP_404_NOT_FOUND)
+		return HttpResponse(message, status=status.HTTP_200_OK)
 	
 	amount = card.batch.denomination
 	ipay_connect = IpayConnect(
@@ -128,19 +128,19 @@ def sms_post(request):
 		message = 'Incorrect meter number'
 		msg = send_sms(message, msisdn)
 		print("msg", msg)
-		return HttpResponse(message, status=status.HTTP_404_NOT_FOUND)
+		return HttpResponse(message, status=status.HTTP_200_OK)
 	elif 'vend_rev_time' in vend:
 		message = 'Technical issue please try after some time'
 		card.save()
 		msg = send_sms(message, msisdn)
 		print("msg", msg)
-		return HttpResponse(message, status=status.HTTP_404_NOT_FOUND)
+		return HttpResponse(message, status=status.HTTP_200_OK)
 	elif vend['code'] == 'elec003':
 		message = 'No record found'
 		card.save()
 		msg = send_sms(message, msisdn)
 		print("msg", msg)
-		return HttpResponse(message, status=status.HTTP_404_NOT_FOUND)
+		return HttpResponse(message, status=status.HTTP_200_OK)
 
 	# update card details
 	card.status = 1
@@ -171,7 +171,8 @@ def sms_post(request):
 		token.save()
 	except Exception as e:
 		message = "Error generating the token"
-		return HttpResponse(message, status=status.HTTP_404_NOT_FOUND)
+		print("msg", message)
+		return HttpResponse(message, status=status.HTTP_200_OK)
 	# send sms
 	message = 'Meter: {}, Token: {}, Amount: Ksh {}, Units: {}'.format(meter, vend['token'], amount, token.units)
 	msg = send_sms(message, msisdn)
