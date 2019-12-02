@@ -16,7 +16,7 @@ class IpayConnect:
 	The class to make the socket connection 
 	and vend the electricity token
 	"""
-	def __init__(self, ip, port, client, term, meter, amount, today, my_ref, rev_ref):
+	def __init__(self, ip, port, client, term, meter, amount, today, my_ref, rev_ref, app_cert, app_key):
 		self.ip = ip
 		self.port = int(port)
 		self.client = client
@@ -26,19 +26,22 @@ class IpayConnect:
 		self.today = today
 		self.my_ref = my_ref
 		self.rev_ref = rev_ref
+		self.app_cert = app_cert
+		self.app_key = app_key
 
 	def create_socket(self):
 		"""
 		create the socket connection
+
 		"""
-		try:
-			s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-			print("Socket successfully created")
-			s.connect((self.ip, self.port))
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		print("Socket successfully created")
+		s.bind((self.ip, self.port))
+		with context.wrap_socket(s, server_side=True) as sock:
+			conn, addr = sock.accept()
 			print("Socket connected to {} on port {}".format(self.ip, self.port))
-			return s
-		except Exception as e:
-			return str(e)
+			return sock
+		return "Error trying to connect the socket"
 
 
 	def create_norm_vend(self):
@@ -150,3 +153,4 @@ class IpayConnect:
 				data = my_dict
 			s.close()
 			return data
+

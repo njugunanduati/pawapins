@@ -180,3 +180,8 @@ BUFFER_SIZE=ENV.str("BUFFER_SIZE", "")
 # africastalking credentials
 AT_USERNAME = ENV.str("AT_USERNAME", "")
 AT_API_KEY = ENV.str("AT_API_KEY", "")
+
+
+# cerificates 
+APP_CERT=ENV.str("APP_CERT", "")
+APP_KEY= ENV.str("APP_KEY", "")

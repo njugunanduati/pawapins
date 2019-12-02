@@ -70,6 +70,8 @@ def sms_post(request):
 	today = settings.date_today
 	my_ref = get_rand()
 	rev_ref = get_rand()
+	app_cert = settings.APP_CERT
+	app_key = settings.APP_KEY
 
 	data = request.POST
 	print("data", data)
@@ -117,7 +119,7 @@ def sms_post(request):
 	
 	amount = card.batch.denomination
 	ipay_connect = IpayConnect(
-		ip, port, client, term, meter, amount, today, my_ref, rev_ref)
+		ip, port, client, term, meter, amount, today, my_ref, rev_ref, app_cert, app_key)
 
 	vend = ipay_connect.make_vend()
 	
