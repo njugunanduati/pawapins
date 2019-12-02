@@ -35,14 +35,13 @@ class IpayConnect:
 		create the socket connection
 
 		"""
-		context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+		context = ssl.SSLContext(ssl.PROTOCOL_TLS)
 		context.load_cert_chain(self.app_cert, self.app_key)
 
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		print("Socket successfully created")
-		s.bind((self.ip, self.port))
 		sock = context.wrap_socket(s, server_side=True)
-		conn, addr = sock.accept()
+		sock.connect((self.ip, self.port))
 		print("Socket connected to {} on port {}".format(self.ip, self.port))
 		return sock
 
