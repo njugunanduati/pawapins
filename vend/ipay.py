@@ -5,6 +5,7 @@ import pytz
 import time
 import random
 import socket
+import ssl
 from lxml import etree
 from .utils import wrap, un_wrap, un_wrap_reverse, get_rand
 
@@ -34,14 +35,16 @@ class IpayConnect:
 		create the socket connection
 
 		"""
+		context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+		context.load_cert_chain(self.app_cert, self.app_key)
+
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		print("Socket successfully created")
 		s.bind((self.ip, self.port))
-		with context.wrap_socket(s, server_side=True) as sock:
-			conn, addr = sock.accept()
-			print("Socket connected to {} on port {}".format(self.ip, self.port))
-			return sock
-		return "Error trying to connect the socket"
+		sock = context.wrap_socket(s, server_side=True)
+		conn, addr = sock.accept()
+		print("Socket connected to {} on port {}".format(self.ip, self.port))
+		return sock
 
 
 	def create_norm_vend(self):
