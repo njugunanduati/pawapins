@@ -35,7 +35,7 @@ class IpayConnect:
 		create the socket connection
 
 		"""
-		context = ssl.SSLContext(ssl.PROTOCOL_TLS)
+		context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
 		context.load_cert_chain(self.app_cert, self.app_key)
 
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
