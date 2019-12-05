@@ -183,5 +183,5 @@ AT_API_KEY = ENV.str("AT_API_KEY", "")
 
 
 # cerificates 
-APP_CERT=ENV.str("APP_CERT", "")
-APP_KEY= ENV.str("APP_KEY", "")
+APP_CERT=open(ENV.str("APP_CERT", "")).read()
+APP_KEY=open(ENV.str("APP_KEY", "")).read()

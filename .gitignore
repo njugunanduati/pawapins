@@ -120,3 +120,9 @@ stop.sh
 
 # restart
 restart.sh
+
+# certicifate
+pesapoint1.co.ke.crt
+
+# key
+pesaptnokey.key
