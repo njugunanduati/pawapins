@@ -41,7 +41,7 @@ class IpayConnect:
 
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		print("Socket successfully created")
-		sock = context.wrap_socket(s, server_side=True)
+		sock = context.wrap_socket(s, server_side=False)
 		sock.connect((self.ip, self.port))
 		print("Socket connected to {} on port {}".format(self.ip, self.port))
 		return sock
