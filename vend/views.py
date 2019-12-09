@@ -135,13 +135,11 @@ def sms_post(request):
 		message = 'Technical issue please try after some time'
 		card.save()
 		msg = send_sms(message, msisdn)
-		print("msg", msg)
 		return HttpResponse(message, status=status.HTTP_200_OK)
 	elif vend['code'] == 'elec003':
 		message = 'No record found'
 		card.save()
 		msg = send_sms(message, msisdn)
-		print("msg", msg)
 		return HttpResponse(message, status=status.HTTP_200_OK)
 
 	# update card details
@@ -166,7 +164,8 @@ def sms_post(request):
 		phone_number=msisdn,
 		meter=meter,
 		amount_paid=amount,
-		pin=pin
+		pin=pin,
+		seq=seq
 	)
 
 	try:
@@ -178,6 +177,5 @@ def sms_post(request):
 	# send sms
 	message = 'Meter: {}, Token: {}, Amount: Ksh {}, Units: {}'.format(meter, vend['token'], amount, token.units)
 	msg = send_sms(message, msisdn)
-	print("msg", msg)
 	message = "The token has been sent to the user"
 	return HttpResponse(message, status=status.HTTP_200_OK)

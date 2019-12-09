@@ -28,6 +28,7 @@ def send_sms(message, msidn):
 			message_id=data['message_id']
 		)
 		smssent.save()
+		print('msg', response)
 		return response
 	except Exception as e:
 		return 'There is an sms error! {}'.format(str(e))
