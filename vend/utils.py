@@ -1,5 +1,18 @@
 #!/usr/bin/python3
 import random
+from .models import Token, Reversal
+
+
+def get_sec_normal():
+	"""
+	checking the latest value
+	and incrementing by 1
+	"""
+	token = Token.objects.order_by('seq', '-created').distinct('seq')
+	sequence = int(token.seq)
+	sequence += 1
+	return str(sequence)
+
 
 def get_rand():
 	"""

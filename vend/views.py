@@ -20,7 +20,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from .ipay import IpayConnect
 from config import settings
-from .utils import get_rand
+from .utils import get_rand, get_sec_normal
 
 from .models import Token, Reversal, Sms, SmsSent
 from pins.models import Subscriber, Card
@@ -72,6 +72,7 @@ def sms_post(request):
 	rev_ref = get_rand()
 	app_cert = settings.APP_CERT
 	app_key = settings.APP_KEY
+	seq = get_sec_normal
 
 	data = request.POST
 	print("data", data)
@@ -129,7 +130,6 @@ def sms_post(request):
 	if vend['code'] is 'elec001':
 		message = 'Incorrect meter number'
 		msg = send_sms(message, msisdn)
-		print("msg", msg)
 		return HttpResponse(message, status=status.HTTP_200_OK)
 	elif 'vend_rev_time' in vend:
 		message = 'Technical issue please try after some time'
@@ -143,13 +143,6 @@ def sms_post(request):
 		msg = send_sms(message, msisdn)
 		print("msg", msg)
 		return HttpResponse(message, status=status.HTTP_200_OK)
-	# elif 'msg' in vend:
-	# 	message = 'Technical issue. Please try after some time'
-	# 	card.save()
-	# 	msg = send_sms(message, msisdn)
-	# 	print("msg", msg)
-	# 	print("no funds available in the accont")
-	# 	return HttpResponse(message, status=status.HTTP_200_OK)
 
 	# update card details
 	card.status = 1

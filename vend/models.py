@@ -39,6 +39,7 @@ class Token(TimeStampedModel):
 	meter = models.CharField(max_length=50, null=True)
 	amount_paid = models.CharField(max_length=30, null=True)
 	pin = models.CharField(max_length=300, null=True)
+	seq = models.CharField(max_length=5, default="00001")
 
 	def __str__(self):
 		return self.token

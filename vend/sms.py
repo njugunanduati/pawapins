@@ -1,23 +1,33 @@
 #!/usr/bin/python3
 import africastalking
 from config import settings
+from .models import SmsSent
 
 
 def send_sms(message, msidn):
-    username = settings.AT_USERNAME
-    api_key = settings.AT_API_KEY
-    try:
-        africastalking.initialize(username, api_key)
-        sms = africastalking.SMS
-        return sms.send(message, [msidn])
-    except Exception as e:
-        return 'The sms error : {}'.format(str(e))
+	username = settings.AT_USERNAME
+	api_key = settings.AT_API_KEY
+	try:
+		africastalking.initialize(username, api_key)
+		sms = africastalking.SMS
+		response = sms.send(message, [msidn])
+		sms_data = response['SMSMessageData']
+		data['message'] = sms_data['Message']
+		data['phone_number'] = msidn
+		for r in sms_data['Recipients']:
+			data['message_id'] = r['messageId']
+			data['cost'] = r['cost']
+			data['status'] = r['status']
+			data['status_code'] = r['statusCode']
 
-
-# {
-#     'statusCode': 101, 
-#     'number': '+254729556997', 
-#     'cost': 'KES 0.8000',
-#     'status': 'Success', 
-#     'messageId': 'ATXid_c2f1aec156b318ff999de775d38bfbb9'
-# }
+		smssent = SmsSent(
+			msidn=data['phone_number'],
+			message=data['message'],
+			cost=data['cost'],
+			status=data['status'],
+			message_id=data['message_id']
+		)
+		smssent.save()
+		return response
+	except Exception as e:
+		return 'There is an sms error! {}'.format(str(e))
