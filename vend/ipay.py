@@ -53,7 +53,7 @@ class IpayConnect:
 		create the xml before vend
 		"""
 		try:
-			root = etree.Element('ipayMsg', client=self.client, term=self.term, seqNum=str(self.seq), time=str(self.today))
+			root = etree.Element('ipayMsg', client=self.client, term=self.term, seqNum=self.seq, time=str(self.today))
 			elecMsg = etree.SubElement(root,'elecMsg', ver="2.44")
 			vendReq = etree.SubElement(elecMsg, 'vendReq')
 			ref = etree.SubElement(vendReq, 'ref')

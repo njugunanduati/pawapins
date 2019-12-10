@@ -72,7 +72,7 @@ def sms_post(request):
 	rev_ref = get_rand()
 	app_cert = settings.APP_CERT
 	app_key = settings.APP_KEY
-	seq = get_sec_normal
+	seq = get_sec_normal()
 
 	data = request.POST
 	print("data", data)
