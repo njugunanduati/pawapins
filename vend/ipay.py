@@ -29,7 +29,7 @@ class IpayConnect:
 		self.rev_ref = rev_ref
 		self.app_cert = app_cert
 		self.app_key = app_key
-		self.seq = seq
+		self.seq = int(seq)
 
 	def create_socket(self):
 		"""
@@ -53,7 +53,7 @@ class IpayConnect:
 		create the xml before vend
 		"""
 		try:
-			root = etree.Element('ipayMsg', client=self.client, term=self.term, seqNum=self.seq, time=str(self.today))
+			root = etree.Element('ipayMsg', client=self.client, term=self.term, seqNum=str(self.seq), time=str(self.today))
 			elecMsg = etree.SubElement(root,'elecMsg', ver="2.44")
 			vendReq = etree.SubElement(elecMsg, 'vendReq')
 			ref = etree.SubElement(vendReq, 'ref')
@@ -76,7 +76,7 @@ class IpayConnect:
 		"""
 		create the reverse vend
 		"""
-		rev_seq = int(self.seq)
+		rev_seq = self.seq
 		rev_seq += 1
 		rev_seq = str(rev_seq)
 		try:
