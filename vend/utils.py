@@ -58,7 +58,7 @@ def un_wrap(data):
 	"""
 	print("---", data)
 	message = data.decode('utf-8', 'backslashreplace')
-	return message[5:]
+	return message[2:]
 
 
 
@@ -68,4 +68,4 @@ def un_wrap_reverse(data):
 	"""
 	print(data)
 	message = data.decode('utf-8', 'backslashreplace')
-	return message[5:]
+	return message[2:]
