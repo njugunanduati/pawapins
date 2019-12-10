@@ -120,7 +120,7 @@ def sms_post(request):
 	
 	amount = card.batch.denomination
 	ipay_connect = IpayConnect(
-		ip, port, client, term, meter, amount, today, my_ref, rev_ref, app_cert, app_key)
+		ip, port, client, term, meter, amount, today, my_ref, rev_ref, app_cert, app_key, seq)
 
 	vend = ipay_connect.make_vend()
 	
