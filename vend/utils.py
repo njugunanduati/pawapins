@@ -8,7 +8,7 @@ def get_sec_normal():
 	checking the latest value
 	and incrementing by 1
 	"""
-	token = Token.objects.order_by('seq', '-created').distinct('seq').get()
+	token = Token.objects.order_by('seq', '-created').distinct('seq').first()
 	sequence = int(token.seq)
 	sequence += 1
 	if len(str(sequence)) == 1:
