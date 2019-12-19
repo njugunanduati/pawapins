@@ -146,14 +146,15 @@ EMAIL_USE_TLS = ENV.bool("EMAIL_USE_TLS", True)
 
 LANGUAGE_CODE = 'en-us'
 
+DATETIME_FORMAT = '%d-%m-%Y %H:%M:%S'
+
 TIME_ZONE = 'Africa/Nairobi'
 
-USE_I18N = True
+USE_I18N = False
 
-USE_L10N = True
+USE_L10N = False
 
-USE_TZ = True
-
+USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
