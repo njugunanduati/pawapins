@@ -7,6 +7,7 @@ from .models import SmsSent
 def send_sms(message, msidn):
 	username = settings.AT_USERNAME
 	api_key = settings.AT_API_KEY
+	data = {}
 	try:
 		africastalking.initialize(username, api_key)
 		sms = africastalking.SMS
@@ -20,14 +21,14 @@ def send_sms(message, msidn):
 			data['status'] = r['status']
 			data['status_code'] = r['statusCode']
 
-		smssent = SmsSent(
+		sms_sent = SmsSent(
 			msidn=data['phone_number'],
 			message=data['message'],
 			cost=data['cost'],
 			status=data['status'],
 			message_id=data['message_id']
 		)
-		smssent.save()
+		sms_sent.save()
 		print('msg', response)
 		return response
 	except Exception as e:
