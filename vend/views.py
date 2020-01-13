@@ -145,7 +145,7 @@ def sms_post(request):
     # update card details
     card.status = 1
     card.used_by = msisdn
-    card.active=False
+    card.active = False
     card.save()
 
     token = Token(

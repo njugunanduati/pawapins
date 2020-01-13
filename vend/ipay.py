@@ -47,7 +47,6 @@ class IpayConnect:
 		print("Socket connected to {} on port {}".format(self.ip, self.port))
 		return sock
 
-
 	def create_norm_vend(self):
 		"""
 		create the xml before vend

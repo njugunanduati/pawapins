@@ -4,17 +4,17 @@ from config import settings
 from .models import SmsSent
 
 
-def send_sms(message, msidn):
+def send_sms(message, msisdn):
 	username = settings.AT_USERNAME
 	api_key = settings.AT_API_KEY
 	data = {}
 	try:
 		africastalking.initialize(username, api_key)
 		sms = africastalking.SMS
-		response = sms.send(message, [msidn])
+		response = sms.send(message, [msisdn])
 		sms_data = response['SMSMessageData']
 		data['message'] = sms_data['Message']
-		data['phone_number'] = msidn
+		data['phone_number'] = msisdn
 		for r in sms_data['Recipients']:
 			data['message_id'] = r['messageId']
 			data['cost'] = r['cost']
