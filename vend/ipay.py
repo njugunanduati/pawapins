@@ -34,12 +34,10 @@ class IpayConnect:
 	def create_socket(self):
 		"""
 		create the socket connection
-
 		"""
 		context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
 		context.load_cert_chain(self.app_cert, self.app_key)
 		print("---", context)
-
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		print("Socket successfully created")
 		sock = context.wrap_socket(s, server_side=False)
@@ -97,7 +95,6 @@ class IpayConnect:
 			return wrap(params)
 		except Exception as e:
 			return str(e)
-
 
 	def make_vend(self):
 		"""

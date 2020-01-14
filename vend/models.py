@@ -87,6 +87,7 @@ class SmsSent(TimeStampedModel):
 	"""
 	msisdn = models.CharField(max_length=20, null=True)
 	message = models.CharField(max_length=300, null=True)
+	sent_text = models.CharField(max_length=300, null=True)
 	cost = models.CharField(max_length=30, null=True)
 	status = models.CharField(max_length=30, null=True)
 	message_id = models.CharField(max_length=300, null=True)

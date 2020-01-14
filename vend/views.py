@@ -27,12 +27,12 @@ from pins.models import Subscriber, Card
 from .sms import send_sms
 
 
-class SmsRecievedView(LoginRequiredMixin, TemplateView):
+class SmsReceivedView(LoginRequiredMixin, TemplateView):
     template_name = "sms.html"
-    title = 'Sms Recieved'
+    title = 'Sms Received'
 
     def get_context_data(self, **kwargs):
-        context = super(SmsRecievedView, self).get_context_data(**kwargs)
+        context = super(SmsReceivedView, self).get_context_data(**kwargs)
         context["sms"] = Sms.objects.all().order_by('-created')
         context["title"] = self.title
         return context

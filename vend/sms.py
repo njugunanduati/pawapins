@@ -22,8 +22,9 @@ def send_sms(message, msisdn):
 			data['status_code'] = r['statusCode']
 
 		sms_sent = SmsSent(
-			msidn=data['phone_number'],
+			msisdn=data['phone_number'],
 			message=data['message'],
+			sent_text=message,
 			cost=data['cost'],
 			status=data['status'],
 			message_id=data['message_id']
