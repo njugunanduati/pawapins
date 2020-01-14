@@ -141,6 +141,11 @@ def sms_post(request):
         card.save()
         msg = send_sms(message, msisdn)
         return HttpResponse(message, status=status.HTTP_200_OK)
+    elif vend['code'] == 'elec028':
+        message = 'Technical issue please try after some time'
+        card.save()
+        msg = send_sms(message, msisdn)
+        return HttpResponse(message, status=status.HTTP_200_OK)
 
     # update card details
     card.status = 1
