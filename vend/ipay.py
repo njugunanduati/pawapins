@@ -68,7 +68,6 @@ class IpayConnect:
 		except Exception as e:
 			return str(e)
 
-
 	def create_reverse_vend(self):
 		"""
 		create the reverse vend
@@ -154,4 +153,3 @@ class IpayConnect:
 				data = my_dict
 			s.close()
 			return data
-
