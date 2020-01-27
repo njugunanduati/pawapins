@@ -23,7 +23,6 @@ from pins.forms import AddCardBatchForm, SearchPinForm, PrintPinCsvForm
 from pins import utils
 
 
-
 class BatchView(LoginRequiredMixin, TemplateView):
     template_name = "batch.html"
     title = 'Batch'

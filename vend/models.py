@@ -61,7 +61,6 @@ class Reversal(TimeStampedModel):
 		return self.id
 
 
-
 @architect.install('partition', type='range', subtype='date', constraint='month', column='created')
 class Sms(TimeStampedModel):
 	"""
