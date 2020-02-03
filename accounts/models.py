@@ -18,11 +18,16 @@ class Profile(TimeStampedModel):
     reset_password_token = models.CharField(
         max_length=300, editable=False, null=True)
     reset_password_request_date = models.DateTimeField(null=True)
+    login_token = models.CharField(
+        max_length=300, editable=False, null=True)
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __repr__(self):
         return self.user.username
+
+    def get_login_token(self):
+        return self.login_token
 
     def generate_password_request_date(self):
         self.reset_password_request_date = timezone.now()

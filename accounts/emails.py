@@ -44,3 +44,17 @@ def send_change_password(user):
         context={},
         to=[user.email],
     )
+
+
+def send_login_token(user, token):
+
+    subject = "Your {site_name} login token is".format(
+        site_name=settings.SITE_NAME
+    )
+
+    send_email(
+        subject=subject,
+        template_name="emails/login_token.html",
+        context={'token': token},
+        to=[user.email],
+    )

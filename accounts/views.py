@@ -3,7 +3,7 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import render
 from django.contrib.auth.password_validation import CommonPasswordValidator
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -13,12 +13,14 @@ from django.contrib import messages
 from django.views.generic.base import View
 from django.db.models import Q
 from django.contrib.auth.models import User
-
+from .emails import send_login_token
 from .models import Profile
 from .forms import (
     AddUserForm, ForgotPasswordForm, ResetPasswordForm,
-    ChangePasswordForm, LoginForm)
+    ChangePasswordForm, LoginForm, LoginTokenForm)
 from .emails import send_forgot_password_request, send_change_password
+from .utils import get_random
+
 
 @login_required
 def home(request):
@@ -47,9 +49,12 @@ class LoginView(TemplateView):
             )
             if user:
                 if user.is_active is True:
-                    login(request, user)
-                    messages.success(request, "Successfully logged in. Welcome "+ user.email)
-                    return HttpResponseRedirect(reverse("accounts:dashboard"))
+                    profile = Profile.objects.filter(user=user).first()
+                    profile.login_token = get_random()
+                    profile.save()
+                    send_login_token(user, profile.login_token)
+                    messages.success(request, "Enter the login token sent on your email")
+                    return HttpResponseRedirect(reverse("accounts:login_token", kwargs={'id': user.id}))
                 else:
                     messages.warning(request, "User inactive. Talk to admin")
                     return HttpResponseRedirect(reverse("accounts:login"))
@@ -58,6 +63,29 @@ class LoginView(TemplateView):
                 return HttpResponseRedirect(reverse("accounts:login"))
         messages.error(request, "Wrong credentials")
         return HttpResponseRedirect(reverse("accounts:login"))
+
+
+def login_token_view(request, **kwargs):
+    template_name = "login_token.html"
+    form = LoginTokenForm
+    title = 'Login Token'
+    user = User.objects.filter(id=kwargs['id']).first()
+    if request.method == "POST":
+        form = form(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            profile = Profile.objects.filter(user=user).first()
+            if str(profile.login_token) == str(data['login_token']):
+                login(request, user)
+                messages.success(request, "Successfully logged in. Welcome "+ user.email)
+                return HttpResponseRedirect(reverse("accounts:dashboard"))
+            else:
+                messages.ERROR(request, "Wrong login token entered")
+                return render(request, template_name, {'form': form, 'title': title})
+        else:
+            messages.ERROR(request, "Wrong login token entered")
+            return render(request, template_name, {'form': form, 'title': title})
+    return render(request, template_name, {'form': form, 'title': title})
 
 
 class AddUserView(TemplateView):
@@ -160,7 +188,6 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context = super(DashboardView, self).get_context_data(**kwargs)
         context["title"] = self.title
         return context
-
 
 
 class ChangePasswordView(LoginRequiredMixin, View):

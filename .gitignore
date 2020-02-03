@@ -126,3 +126,6 @@ pesapoint1.co.ke.crt
 
 # key
 pesaptnokey.key
+
+# pin encryption
+Pawa_pin_encryption_key.asc

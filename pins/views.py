@@ -4,6 +4,7 @@ import string
 import logging
 import io
 import csv
+# import pgpy
 
 from datetime import datetime, timedelta
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -51,12 +52,12 @@ class AddBatchView(LoginRequiredMixin, TemplateView):
         if form.is_valid():
             data = form.cleaned_data
             denomination = data['denomination']
-            totalcards = int(form.data['totalcards'])
+            total_cards = int(form.data['totalcards'])
             expire_at = datetime.now()+timedelta(days=365*2)
-            card_batch = CardBatch(denomination=denomination,totalcards=totalcards,
+            card_batch = CardBatch(denomination=denomination,totalcards=total_cards,
                                 live=0, expire_at=expire_at, status=0, created_by=user)
             card_batch.save()
-            reactor.callInThread(utils.generate_cards, totalcards, card_batch)
+            reactor.callInThread(utils.generate_cards, total_cards, card_batch)
             messages.success(request,"Cards are being generated, please wait")
             return HttpResponseRedirect(reverse('pins:batch'))
         else:
@@ -96,6 +97,7 @@ class ShowPinsView(LoginRequiredMixin, TemplateView):
         else:
             return HttpResponseRedirect(reverse('card:batch'))
 
+
 @login_required
 def move_to_live(request, id):
     try:
@@ -118,7 +120,6 @@ def move_to_live(request, id):
     except Exception as e:
         print("Error as ", str(e))
         logging.exception(e)
-
 
 
 class GetPinCsvView(LoginRequiredMixin, TemplateView):
@@ -148,7 +149,8 @@ class GetPinCsvView(LoginRequiredMixin, TemplateView):
             writer = csv.writer(response)
             writer.writerow(['Pin', 'Amount'])
             for p in pins:
-                writer.writerow([str(p.pin), p.batch.denomination])
+                print("pin", p.pin)
+                writer.writerow([p.pin, p.batch.denomination])
             return response
         else:
             return HttpResponseRedirect(reverse('card:batch'))

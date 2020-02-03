@@ -17,7 +17,6 @@ from django.conf import settings
 import architect
 
 
-
 @architect.install('partition', type='range', subtype='date', constraint='month', column='created')
 class Token(TimeStampedModel):
 	"""

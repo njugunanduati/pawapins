@@ -5,7 +5,6 @@ from django.contrib.auth.forms import UserCreationForm
 from django.db.models.functions import Concat
 from django.db.models import Value
 from django.contrib.auth.models import User
-
 from accounts.models import Profile
 from accounts.utils import reset_password_token
 from accounts.emails import send_forgot_password_request, send_change_password
@@ -38,9 +37,7 @@ class AddUserForm(UserCreationForm):
         )
 
 
-
 class ForgotPasswordForm(forms.Form):
-
     email = forms.EmailField()
 
     def clean_email(self):
@@ -59,6 +56,7 @@ class ForgotPasswordForm(forms.Form):
             user = User.objects.filter(email=email).first()
             profile = Profile.objects.filter(
                 user=user).first()
+            print("profile", profile)
             profile.generate_password_request_date()
             profile.reset_password_token = reset_password_token(user.email)
             profile.save()
@@ -69,7 +67,6 @@ class ForgotPasswordForm(forms.Form):
             raise forms.ValidationError("Unable to reset your password.")
 
         return self.cleaned_data
-
 
 
 class LoginForm(forms.Form):
@@ -106,7 +103,6 @@ class ResetPasswordForm(forms.Form):
     def clean(self):
         password1 = self.cleaned_data["password1"]
         password2 = self.cleaned_data["password2"]
-		
 
         if password1 != password2:
             raise forms.ValidationError("Passwords didn't match.")
@@ -125,10 +121,7 @@ class ResetPasswordForm(forms.Form):
         profile.save()
 
         send_change_password(profile.user)
-
-
         return self.cleaned_data
-
 
 
 class ChangePasswordForm(forms.Form):
@@ -158,3 +151,9 @@ class ChangePasswordForm(forms.Form):
             raise forms.ValidationError("Passwords didn't match.")
 
         return self.cleaned_data
+
+
+class LoginTokenForm(forms.Form):
+    login_token = forms.CharField(
+        label="Login Token"
+    )
