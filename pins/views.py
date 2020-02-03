@@ -4,7 +4,8 @@ import string
 import logging
 import io
 import csv
-# import pgpy
+import gnupg
+from pprint import pprint
 
 from datetime import datetime, timedelta
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -22,6 +23,7 @@ from twisted.internet import reactor
 from pins.models import Card, CardBatch, CardPreview
 from pins.forms import AddCardBatchForm, SearchPinForm, PrintPinCsvForm
 from pins import utils
+from config import settings
 
 
 class BatchView(LoginRequiredMixin, TemplateView):
@@ -123,6 +125,12 @@ def move_to_live(request, id):
 
 
 class GetPinCsvView(LoginRequiredMixin, TemplateView):
+    file = settings.PIN_KEY
+    print("+++++", file)
+    gpg = gnupg.GPG()
+    key_data = open(file).read()
+    import_result = gpg.import_keys(key_data)
+    print("--", import_result.fingerprints)
     template_name = "pins_csv.html"
     title = "Print Pins CSV"
     form = PrintPinCsvForm
@@ -150,7 +158,9 @@ class GetPinCsvView(LoginRequiredMixin, TemplateView):
             writer.writerow(['Pin', 'Amount'])
             for p in pins:
                 print("pin", p.pin)
-                writer.writerow([p.pin, p.batch.denomination])
+                encrypted_pin = self.gpg.encrypt(p.pin, self.import_result.fingerprints)
+                print("====", self.gpg.list_keys())
+                writer.writerow([str(p.pin), p.batch.denomination])
             return response
         else:
             return HttpResponseRedirect(reverse('card:batch'))

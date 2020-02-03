@@ -185,3 +185,4 @@ AT_API_KEY = ENV.str("AT_API_KEY", "")
 # cerificates 
 APP_CERT=BASE_DIR+'/ssl/'+ENV.str("APP_CERT", "")
 APP_KEY=BASE_DIR+'/ssl/'+ENV.str("APP_KEY", "")
+PIN_KEY=BASE_DIR+'/ssl/'+ENV.str("PIN_KEY", "")

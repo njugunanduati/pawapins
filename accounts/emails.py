@@ -8,6 +8,7 @@ from django.conf import settings
 __all__ = (
     "send_forgot_password_request",
     "send_change_password",
+    "send_login_token"
 )
 
 
@@ -48,7 +49,7 @@ def send_change_password(user):
 
 def send_login_token(user, token):
 
-    subject = "Your {site_name} login token is".format(
+    subject = "{site_name} login token".format(
         site_name=settings.SITE_NAME
     )
 
