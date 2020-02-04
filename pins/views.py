@@ -5,9 +5,9 @@ import logging
 import io
 import csv
 import gnupg
-from pprint import pprint
-
+import calendar
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -19,11 +19,12 @@ from django.contrib import messages
 from django.views.generic.base import View
 from django.contrib.auth.models import User
 from twisted.internet import reactor
-
 from pins.models import Card, CardBatch, CardPreview
 from pins.forms import AddCardBatchForm, SearchPinForm, PrintPinCsvForm
 from pins import utils
 from config import settings
+
+gpg = gnupg.GPG()
 
 
 class BatchView(LoginRequiredMixin, TemplateView):
@@ -126,15 +127,12 @@ def move_to_live(request, id):
 
 class GetPinCsvView(LoginRequiredMixin, TemplateView):
     file = settings.PIN_KEY
-    print("+++++", file)
-    gpg = gnupg.GPG()
-    key_data = open(file).read()
-    import_result = gpg.import_keys(key_data)
-    print("--", import_result.fingerprints)
     template_name = "pins_csv.html"
     title = "Print Pins CSV"
     form = PrintPinCsvForm
     pins = CardPreview.objects.all()
+    duration = 6
+    date_after_month = datetime.today() + relativedelta(months=duration)
 
     def get_context_data(self, **kwargs):
         page = self.request.GET.get('page')
@@ -155,12 +153,16 @@ class GetPinCsvView(LoginRequiredMixin, TemplateView):
             batch = CardBatch.objects.filter(denomination=amount).first()
             pins = self.pins.filter(batch=batch.id, status=0).order_by('id')
             writer = csv.writer(response)
-            writer.writerow(['Pin', 'Amount'])
+            writer.writerow(['Pin', 'Serial No.', 'Expiry date', 'Validity Period', 'Amount'])
+
+            with open(self.file) as f:
+                key_data = f.read()
+            import_result = gpg.import_keys(key_data)
+            recipients = import_result.results[0]['fingerprint']
             for p in pins:
-                print("pin", p.pin)
-                encrypted_pin = self.gpg.encrypt(p.pin, self.import_result.fingerprints)
-                print("====", self.gpg.list_keys())
-                writer.writerow([str(p.pin), p.batch.denomination])
+                serial_no = random.randint(100000, 999999)
+                # encrypted_pin = gpg.encrypt(p.pin, recipients)
+                writer.writerow([str(p.pin), 'PAWA-'+str(serial_no), self.date_after_month.strftime('%d/%m/%Y'), self.duration, p.batch.denomination])
             return response
         else:
             return HttpResponseRedirect(reverse('card:batch'))
