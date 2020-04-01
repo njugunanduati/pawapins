@@ -126,8 +126,9 @@ def sms_post(request):
 
     # save the vend data
     print("vend", vend)
+    print("the vend code", vend['code'])
 
-    if vend['code'] is 'elec001':
+    if vend['code'] == 'elec001':
         message = 'Incorrect meter number'
         msg = send_sms(message, msisdn)
         return HttpResponse(message, status=status.HTTP_200_OK)
