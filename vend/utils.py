@@ -48,7 +48,7 @@ def wrap(msg):
 
 def un_wrap(data):
     print("---un_wrap", data)
-    if check_byte_length(data) <= 1452:
+    if check_byte_length(data) >= 1452:
         message = data.decode('utf-8', 'backslashreplace')
         print("un_wrapped_", message[5:])
         return message[5:]
