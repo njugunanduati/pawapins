@@ -51,7 +51,7 @@ def un_wrap(data):
     message = data.decode('utf-8', 'backslashreplace')
     check_length = check_byte_length(message)
     if check_length > 416:
-        print("un_wrapped_>416", message[5:])
+        print("un_wrapped_>416", message[3:])
         return message[5:]
     else:
         print("un_wrapped_<416", message[2:])
@@ -60,3 +60,4 @@ def un_wrap(data):
 
 def check_byte_length(data):
     return sys.getsizeof(data)
+
