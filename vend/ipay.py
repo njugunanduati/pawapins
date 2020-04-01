@@ -103,53 +103,91 @@ class IpayConnect:
 		s = self.create_socket()
 		data_frame = self.create_norm_vend()
 		print(data_frame)
-		try:
-			req = s.send(data_frame)
-			print ("Response sent : %s" % time.ctime())
-			resp = s.recv(2048)
-			print ("Response received : %s" % time.ctime())
-			print(len(resp))
-			data = un_wrap(resp)
-			root = etree.fromstring(data)
-			my_dict = {}
-			for element in root.iter():
-				if element.tag == 'ipayMsg':
-					my_dict['vend_time'] = element.get('time')
-				if element.tag == 'res':
-					my_dict['code'] = element.get('code')
-				if element.tag == 'ref':
-					my_dict['reference'] = element.text
-				if element.tag == 'util':
-					my_dict['address'] = element.get('addr')
-				if element.tag == 'stdToken':
-					my_dict['token'] = element.text
-					my_dict['units'] = element.get('units')
-					my_dict['units_type'] = element.get('unitsType')
-					my_dict['amount'] = element.get('amt')
-					my_dict['tax'] = element.get('tax')
-					my_dict['tarrif'] = element.get('tariff')
-					my_dict['description'] = element.get('desc')
-					my_dict['rct_num'] = element.get('rctNum')
-				data = my_dict
-				s.close()
-			return data
-		except Exception as e:
-			print("Didn't receive data! [Timeout]")
-			data_frame = self.create_reverse_vend()
-			req = s.send(data_frame)
-			print ("Reverse Response sent : %s" % time.ctime())
-			resp = s.recv(1024)
-			print ("Reverse Response received : %s" % time.ctime())
-			data = un_wrap_reverse(resp)
-			root = etree.fromstring(data)
-			my_dict = {}
-			for element in root.iter():
-				if element.tag == 'ipayMsg':
-					my_dict['vend_rev_time'] = element.get('time')
-				if element.tag == 'ref':
-					my_dict['ref'] = element.text
-				if element.tag == 'res':
-					my_dict['code'] = element.get('code')
-				data = my_dict
+		req = s.send(data_frame)
+		print ("Response sent : %s" % time.ctime())
+		resp = s.recv(2048)
+		print ("Response received : %s" % time.ctime())
+		print(len(resp))
+		data = un_wrap(resp)
+		root = etree.fromstring(data)
+		my_dict = {}
+		for element in root.iter():
+			if element.tag == 'ipayMsg':
+				my_dict['vend_time'] = element.get('time')
+			if element.tag == 'res':
+				my_dict['code'] = element.get('code')
+			if element.tag == 'ref':
+				my_dict['reference'] = element.text
+			if element.tag == 'util':
+				my_dict['address'] = element.get('addr')
+			if element.tag == 'stdToken':
+				my_dict['token'] = element.text
+				my_dict['units'] = element.get('units')
+				my_dict['units_type'] = element.get('unitsType')
+				my_dict['amount'] = element.get('amt')
+				my_dict['tax'] = element.get('tax')
+				my_dict['tarrif'] = element.get('tariff')
+				my_dict['description'] = element.get('desc')
+				my_dict['rct_num'] = element.get('rctNum')
+			data = my_dict
 			s.close()
-			return data
+		return data
+
+		# def make_vend(self):
+		# 	"""
+		# 	make the vend request to the bizz switch server
+		# 	and if it fails initiate a reverse vend
+		# 	"""
+		# 	s = self.create_socket()
+		# 	data_frame = self.create_norm_vend()
+		# 	print(data_frame)
+		# 	try:
+		# 		req = s.send(data_frame)
+		# 		print("Response sent : %s" % time.ctime())
+		# 		resp = s.recv(2048)
+		# 		print("Response received : %s" % time.ctime())
+		# 		print(len(resp))
+		# 		data = un_wrap(resp)
+		# 		root = etree.fromstring(data)
+		# 		my_dict = {}
+		# 		for element in root.iter():
+		# 			if element.tag == 'ipayMsg':
+		# 				my_dict['vend_time'] = element.get('time')
+		# 			if element.tag == 'res':
+		# 				my_dict['code'] = element.get('code')
+		# 			if element.tag == 'ref':
+		# 				my_dict['reference'] = element.text
+		# 			if element.tag == 'util':
+		# 				my_dict['address'] = element.get('addr')
+		# 			if element.tag == 'stdToken':
+		# 				my_dict['token'] = element.text
+		# 				my_dict['units'] = element.get('units')
+		# 				my_dict['units_type'] = element.get('unitsType')
+		# 				my_dict['amount'] = element.get('amt')
+		# 				my_dict['tax'] = element.get('tax')
+		# 				my_dict['tarrif'] = element.get('tariff')
+		# 				my_dict['description'] = element.get('desc')
+		# 				my_dict['rct_num'] = element.get('rctNum')
+		# 			data = my_dict
+		# 			s.close()
+		# 		return data
+		# 	except Exception as e:
+		# 		print("Didn't receive data! [Timeout]")
+		# 		data_frame = self.create_reverse_vend()
+		# 		req = s.send(data_frame)
+		# 		print("Reverse Response sent : %s" % time.ctime())
+		# 		resp = s.recv(1024)
+		# 		print("Reverse Response received : %s" % time.ctime())
+		# 		data = un_wrap_reverse(resp)
+		# 		root = etree.fromstring(data)
+		# 		my_dict = {}
+		# 		for element in root.iter():
+		# 			if element.tag == 'ipayMsg':
+		# 				my_dict['vend_rev_time'] = element.get('time')
+		# 			if element.tag == 'ref':
+		# 				my_dict['ref'] = element.text
+		# 			if element.tag == 'res':
+		# 				my_dict['code'] = element.get('code')
+		# 			data = my_dict
+		# 		s.close()
+		# 		return data

@@ -158,10 +158,13 @@ class GetPinCsvView(LoginRequiredMixin, TemplateView):
             with open(self.file) as f:
                 key_data = f.read()
             import_result = gpg.import_keys(key_data)
+            for r in import_result.results:
+                print("====", r)
             recipients = import_result.results[0]['fingerprint']
             for p in pins:
                 serial_no = random.randint(100000, 999999)
-                # encrypted_pin = gpg.encrypt(p.pin, recipients)
+                encrypted_pin = gpg.encrypt(p.pin, recipients)
+                print("the pin ", encrypted_pin.stderr)
                 writer.writerow([str(p.pin), 'PAWA-'+str(serial_no), self.date_after_month.strftime('%d/%m/%Y'), self.duration, p.batch.denomination])
             return response
         else:
