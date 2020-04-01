@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import sys
 import random
 from .models import Token, Reversal
 
@@ -49,9 +50,12 @@ def un_wrap(data):
     print("---un_wrap", data)
     message = data.decode('utf-8', 'backslashreplace')
     print("unwrapped_message", message)
-    return message[5:]
+    check_length = check_byte_length(message)
+    if check_length > 416:
+        return message[5:]
+    else:
+        return message[2:]
 
 
-def un_wrap_reverse(data):
-    message = data.decode('utf-8', 'backslashreplace')
-    return message[2:]
+def check_byte_length(data):
+    return sys.getsizeof(data)

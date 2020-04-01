@@ -7,7 +7,7 @@ import random
 import socket
 import ssl
 from lxml import etree
-from .utils import wrap, un_wrap, un_wrap_reverse, get_rand
+from .utils import wrap, un_wrap, get_rand
 
 my_ref = get_rand()
 
