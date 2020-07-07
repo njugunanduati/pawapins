@@ -169,7 +169,7 @@ BASE_URL = ENV.str("BASE_URL", "")
 # LOGOUT_REDIRECT_URL = 'login'
 
 
-# bizswitch credentials
+# BIZSWITCH CREDENTIALS
 CLIENT = ENV.str("CLIENT", "")
 TERMINAL = ENV.str("TERMINAL", "")
 TERMINAL_REVERSAL = ENV.str("TERMINAL_REVERSAL", "")
@@ -177,12 +177,21 @@ IP=ENV.str("IP", "")
 PORT=ENV.str("PORT", "")
 BUFFER_SIZE=ENV.str("BUFFER_SIZE", "")
 
-# africastalking credentials
+# AFRICASTALKING  CREDENTIALS
 AT_USERNAME = ENV.str("AT_USERNAME", "")
 AT_API_KEY = ENV.str("AT_API_KEY", "")
 
 
-# cerificates 
-APP_CERT=BASE_DIR+'/ssl/'+ENV.str("APP_CERT", "")
-APP_KEY=BASE_DIR+'/ssl/'+ENV.str("APP_KEY", "")
-PIN_KEY=BASE_DIR+'/ssl/'+ENV.str("PIN_KEY", "")
+# SSL CERTIFICATES
+APP_CERT = BASE_DIR+'/ssl/'+ENV.str("APP_CERT", "")
+APP_KEY = BASE_DIR+'/ssl/'+ENV.str("APP_KEY", "")
+PIN_KEY = BASE_DIR+'/ssl/'+ENV.str("PIN_KEY", "")
+
+# PESAPOINT SMS CREDENTIALS
+SMS_URL = ENV.str("SMS_URL", "")
+SMS_HOST = ENV.str("SMS_HOST", "")
+SMS_APP_NAME = ENV.str("SMS_APP_NAME", "")
+SMS_SENDER_ID = ENV.str("SMS_SENDER_ID", "")
+SMS_USERNAME = ENV.str("SMS_USERNAME", "")
+SMS_PASSWORD = ENV.str("SMS_PASSWORD", "")
+SMS_PRIORITY = ENV.str("SMS_PRIORITY", "")

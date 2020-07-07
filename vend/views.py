@@ -26,6 +26,18 @@ from .models import Token, Reversal, Sms, SmsSent
 from pins.models import Subscriber, Card
 from .sms import send_sms
 
+client = settings.CLIENT
+term = settings.TERMINAL
+ip = settings.IP
+port = settings.PORT
+buffer_size = settings.BUFFER_SIZE
+today = settings.date_today
+my_ref = get_rand()
+rev_ref = get_rand()
+app_cert = settings.APP_CERT
+app_key = settings.APP_KEY
+seq = get_sec_normal()
+
 
 class SmsReceivedView(LoginRequiredMixin, TemplateView):
     template_name = "sms.html"
@@ -62,18 +74,6 @@ class TokenView(LoginRequiredMixin, TemplateView):
 
 @csrf_exempt
 def sms_post(request):
-    client = settings.CLIENT
-    term = settings.TERMINAL
-    ip = settings.IP
-    port = settings.PORT
-    buffer_size = settings.BUFFER_SIZE
-    today = settings.date_today
-    my_ref = get_rand()
-    rev_ref = get_rand()
-    app_cert = settings.APP_CERT
-    app_key = settings.APP_KEY
-    seq = get_sec_normal()
-
     data = request.POST
     print("data", data)
     date_received = data['date']
@@ -87,18 +87,25 @@ def sms_post(request):
     to = data['to']
     network_code = data['networkCode']
     sms = Sms(
-        date_recieved=date_received,
+        date_received=date_received,
         msisdn=msisdn,
         at_id=at_id,
         link_id=link_id,
         message=message,
         to=to,
         network_code=network_code
-        )
+    )
     sms.save()
+    message = 'Sms has been saved'
+    print("msg", message)
+    return HttpResponse(message, status=status.HTTP_200_OK)
+
+
+def check_sms(request):
+    sms = Sms.objects.filter(status=False).first()
     data = {}
-    data['msisdn'] = msisdn
-    data['message'] = message
+    data['msisdn'] = sms.msisdn
+    data['message'] = sms.message
     msisdn = data['msisdn']
     message = data['message']
     data = message.split('#')
@@ -154,6 +161,10 @@ def sms_post(request):
     card.active = False
     card.save()
 
+    # update the sms status
+    sms.status = True
+    sms.save()
+
     token = Token(
         vend_time=vend['vend_time'],
         reference=vend['reference'],
@@ -173,15 +184,22 @@ def sms_post(request):
         pin=pin,
         seq=seq
     )
-
     try:
         token.save()
     except Exception as e:
         message = "Error generating the token"
         print("msg", message)
         return HttpResponse(message, status=status.HTTP_200_OK)
-    # send sms
     message = 'Meter: {}, Token: {}, Amount: Ksh {}, Units: {}'.format(meter, vend['token'], amount, token.units)
     msg = send_sms(message, msisdn)
     message = "The token has been sent to the user"
+    return HttpResponse(message, status=status.HTTP_200_OK)
+
+
+def check_test_sms(request):
+    sms = Sms.objects.filter(status=False).first()
+    for s in sms:
+        print("message", s.message)
+        print("status", s.status)
+    message = "The total sms"
     return HttpResponse(message, status=status.HTTP_200_OK)

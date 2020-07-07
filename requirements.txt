@@ -6,12 +6,14 @@ astroid==2.1.0
 attrs==18.2.0
 Automat==0.7.0
 autopep8==1.4.3
+cached-property==1.5.1
 certifi==2019.9.11
 cffi==1.12.2
 chardet==3.0.4
 constantly==15.1.0
 contextlib2==0.5.5
 cryptography==2.6
+defusedxml==0.6.0
 Django==2.1.7
 django-adminlte2==0.4.1
 django-crispy-forms==1.7.2
@@ -23,6 +25,7 @@ fs==2.4.11
 hyperlink==18.0.0
 idna==2.8
 incremental==17.5.0
+isodate==0.6.0
 isort==4.3.9
 jwt==0.6.1
 lazy-object-proxy==1.3.1
@@ -43,6 +46,7 @@ python-dotenv==0.10.1
 python-gnupg==0.4.5
 pytz==2018.9
 requests==2.22.0
+requests-toolbelt==0.9.1
 schema==0.7.1
 six==1.12.0
 Twisted==18.9.0
@@ -50,4 +54,5 @@ typed-ast==1.3.1
 Unipath==1.1
 urllib3==1.25.6
 wrapt==1.11.1
+zeep==3.4.0
 zope.interface==4.6.0

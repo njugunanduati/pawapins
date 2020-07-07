@@ -1,6 +1,3 @@
-from django.db import models
-
-
 import uuid
 import string
 import random
@@ -63,9 +60,9 @@ class Reversal(TimeStampedModel):
 @architect.install('partition', type='range', subtype='date', constraint='month', column='created')
 class Sms(TimeStampedModel):
 	"""
-	table for storing the successful messages recieved
+	table for storing the successful messages received
 	"""
-	date_recieved = models.CharField(max_length=300, null=True)
+	date_received = models.CharField(max_length=300, null=True)
 	msisdn = models.CharField(max_length=20, null=True)
 	at_id = models.CharField(max_length=300, null=True)
 	link_id = models.CharField(max_length=300, null=True)
@@ -73,6 +70,7 @@ class Sms(TimeStampedModel):
 	message = models.CharField(max_length=300, null=True)
 	to = models.CharField(max_length=300, null=True)
 	network_code = models.CharField(max_length=300, null=True)
+	status = models.BooleanField(default=False)
 
 	def __str__(self):
 		return self.message
