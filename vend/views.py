@@ -25,6 +25,7 @@ from .utils import get_rand, get_sec_normal
 from .models import Token, Reversal, Sms, SmsSent
 from pins.models import Subscriber, Card
 from .sms import send_sms
+from .signals import new_sms_received
 
 client = settings.CLIENT
 term = settings.TERMINAL
@@ -75,7 +76,7 @@ class TokenView(LoginRequiredMixin, TemplateView):
 @csrf_exempt
 def sms_post(request):
     data = request.POST
-    print("data", data)
+    # print("data", data)
     date_received = data['date']
     msisdn = data['from']
     at_id = data['id']
@@ -96,22 +97,18 @@ def sms_post(request):
         network_code=network_code
     )
     sms.save()
-    message = 'Sms has been saved'
-    print("msg", message)
-    return HttpResponse(message, status=status.HTTP_200_OK)
-
-
-def check_sms(request):
-    sms = Sms.objects.filter(status=False).first()
-    data = {}
-    data['msisdn'] = sms.msisdn
-    data['message'] = sms.message
-    msisdn = data['msisdn']
-    message = data['message']
     data = message.split('#')
     pin = data[0].split(' ')
     pin = pin[1]
     meter = data[1]
+    # send signal for buying token
+    new_sms_received.send(sender=sms, meter=meter, pin=pin, msisdn=msisdn)
+    message = 'Sms has been saved'
+    # print("msg", message)
+    return HttpResponse(message, status=status.HTTP_200_OK)
+
+
+def buy_token(sms, meter, pin, msisdn):
     try:
         card = Card.objects.filter(pin=pin).get()
     except ObjectDoesNotExist:
@@ -137,22 +134,22 @@ def check_sms(request):
 
     if vend['code'] == 'elec001':
         message = 'Incorrect meter number'
-        msg = send_sms(message, msisdn)
+        send_sms(message, msisdn)
         return HttpResponse(message, status=status.HTTP_200_OK)
     elif 'vend_rev_time' in vend:
         message = 'Technical issue please try after some time'
         card.save()
-        msg = send_sms(message, msisdn)
+        send_sms(message, msisdn)
         return HttpResponse(message, status=status.HTTP_200_OK)
     elif vend['code'] == 'elec003':
         message = 'No record found'
         card.save()
-        msg = send_sms(message, msisdn)
+        send_sms(message, msisdn)
         return HttpResponse(message, status=status.HTTP_200_OK)
     elif vend['code'] == 'elec028':
         message = 'Technical issue please try after some time'
         card.save()
-        msg = send_sms(message, msisdn)
+        send_sms(message, msisdn)
         return HttpResponse(message, status=status.HTTP_200_OK)
 
     # update card details
@@ -195,11 +192,3 @@ def check_sms(request):
     message = "The token has been sent to the user"
     return HttpResponse(message, status=status.HTTP_200_OK)
 
-
-def check_test_sms(request):
-    sms = Sms.objects.filter(status=False).first()
-    for s in sms:
-        print("message", s.message)
-        print("status", s.status)
-    message = "The total sms"
-    return HttpResponse(message, status=status.HTTP_200_OK)
