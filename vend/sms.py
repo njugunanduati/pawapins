@@ -83,7 +83,7 @@ def send_sms(message, msisdn):
             status=True,
         )
         sms_sent.save()
-        print('msg', response)
+        print('msg', response.text)
         return response
     except Exception as e:
         return 'There is an sms error! {}'.format(str(e))
