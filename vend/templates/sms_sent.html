@@ -3,19 +3,22 @@
 
 {% block app_content %}
 
-    <table id="users_table" class="table table-striped">
+    <table id="sms_sent_datatable" class="table table-striped table-bordered dt-responsive nowrap">
         <thead>
             <tr>
+                <th>No.</th>
                 <th>Phone Number</th>
                 <th>Message</th>
-                <th>Cost</th>
                 <th>Status</th>
-                <th>Message Id</th>
+                <th>Date Sent</th>
             </tr>
         </thead>
         <tbody>
             {% for s in sms %}
             <tr>
+                <td>
+                    {{ forloop.counter }} {{ s.sms }}
+                </td>
                 <td>
                     {{ s.msisdn }}
                 </td>
@@ -23,13 +26,10 @@
                     {{ s.sent_text }}
                 </td>
                 <td>
-                    {{ s.cost }}
-                </td>
-                <td>
                     {{ s.status }}
                 </td>
                 <td>
-                    {{ s.message_id }}
+                    {{ s.created|date:'Y-m-d H:i' }}
                 </td>
             </tr>
             {% endfor %}
@@ -37,3 +37,11 @@
     </table>
 
 {% endblock %}
+{% block extended_js %}
+{{ block.super}}
+<script>
+ $(document).ready( function () {
+     $('#sms_sent_datatable').DataTable();
+ });
+</script>
+{% endblock extended_js %}
