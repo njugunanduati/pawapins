@@ -48,7 +48,7 @@ class AddBatchView(LoginRequiredMixin, TemplateView):
         context["form"] = self.form
         context["title"] = self.title
         return context
-    
+
     def post(self, request):
         form = AddCardBatchForm(data=request.POST)
         user = request.user
@@ -56,12 +56,12 @@ class AddBatchView(LoginRequiredMixin, TemplateView):
             data = form.cleaned_data
             denomination = data['denomination']
             total_cards = int(form.data['totalcards'])
-            expire_at = datetime.now()+timedelta(days=365*2)
-            card_batch = CardBatch(denomination=denomination,totalcards=total_cards,
-                                live=0, expire_at=expire_at, status=0, created_by=user)
+            expire_at = datetime.now() + timedelta(days=365 * 2)
+            card_batch = CardBatch(denomination=denomination, totalcards=total_cards,
+                                   live=0, expire_at=expire_at, status=0, created_by=user)
             card_batch.save()
             reactor.callInThread(utils.generate_cards, total_cards, card_batch)
-            messages.success(request,"Cards are being generated, please wait")
+            messages.success(request, "Cards are being generated, please wait")
             return HttpResponseRedirect(reverse('pins:batch'))
         else:
             return self.render_to_response(self.get_context_data(
@@ -85,7 +85,7 @@ class ShowPinsView(LoginRequiredMixin, TemplateView):
         pins = paginator.get_page(page)
         context["pins"] = pins
         return context
-    
+
     def post(self, request, id):
         form = self.form(data=request.POST)
         if form.is_valid():
@@ -110,7 +110,8 @@ def move_to_live(request, id):
             pins = CardPreview.objects.filter(batch=batch, status=0)
             if pins:
                 for pin in pins:
-                    card = Card(id=pin.id, pin=pin.pin, created_at=pin.created, batch=pin.batch, active=True, status=0, used_at=datetime(2017, 7, 1))
+                    card = Card(id=pin.id, pin=pin.pin, created_at=pin.created, batch=pin.batch, active=True, status=0,
+                                used_at=datetime(2017, 7, 1))
                     card.save()
                 batch.live = 3
                 batch.save()
@@ -125,47 +126,31 @@ def move_to_live(request, id):
         logging.exception(e)
 
 
-class GetPinCsvView(LoginRequiredMixin, TemplateView):
+@login_required
+def get_csv(request, id):
     file = settings.PIN_KEY
-    template_name = "pins_csv.html"
-    title = "Print Pins CSV"
-    form = PrintPinCsvForm
-    pins = CardPreview.objects.all()
+    batch = CardBatch.objects.get(id=id)
+    pins = CardPreview.objects.all().filter(batch=batch, status=0).order_by('id')
     duration = 6
     date_after_month = datetime.today() + relativedelta(months=duration)
 
-    def get_context_data(self, **kwargs):
-        page = self.request.GET.get('page')
-        context = super(GetPinCsvView, self).get_context_data(**kwargs)
-        context["form"] = self.form
-        context["title"] = self.title
-        return context
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="active_pins.csv"'
 
-    def post(self, request):
-        # Create the HttpResponse object with the appropriate CSV header.
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="active_pins.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['Pin', 'Serial No.', 'Expiry date', 'Validity Period', 'Amount'])
 
-        form = self.form(data=request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-            amount = data["amount"]
-            batch = CardBatch.objects.filter(denomination=amount).first()
-            pins = self.pins.filter(batch=batch.id, status=0).order_by('id')
-            writer = csv.writer(response)
-            writer.writerow(['Pin', 'Serial No.', 'Expiry date', 'Validity Period', 'Amount'])
-
-            with open(self.file) as f:
-                key_data = f.read()
-            import_result = gpg.import_keys(key_data)
-            for r in import_result.results:
-                print("====", r)
-            recipients = import_result.results[0]['fingerprint']
-            for p in pins:
-                serial_no = random.randint(100000, 999999)
-                encrypted_pin = gpg.encrypt(p.pin, recipients)
-                print("the pin ", encrypted_pin.stderr)
-                writer.writerow([str(p.pin), 'PAWA-'+str(serial_no), self.date_after_month.strftime('%d/%m/%Y'), self.duration, p.batch.denomination])
-            return response
-        else:
-            return HttpResponseRedirect(reverse('card:batch'))
+    with open(file) as f:
+        key_data = f.read()
+    import_result = gpg.import_keys(key_data)
+    for r in import_result.results:
+        print("====", r)
+    recipients = import_result.results[0]['fingerprint']
+    for p in pins:
+        serial_no = random.randint(100000, 999999)
+        encrypted_pin = gpg.encrypt(p.pin, recipients)
+        print("the pin ", encrypted_pin.stderr)
+        writer.writerow([str(p.pin), 'PAWA-' + str(serial_no), date_after_month.strftime('%d/%m/%Y'), duration,
+                         p.batch.denomination])
+    return response

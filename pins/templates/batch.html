@@ -14,6 +14,7 @@
                 <th>Status</th>
                 <th>Live</th>
                 <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -35,13 +36,26 @@
                     {{ b.expire_at }}
                 </td>
                 <td>
-                    {{ b.status }}
+                    {% if b.status == 0 %}
+                        Pending
+                    {% elif b.status == 1 %}
+                        Failed
+                    {% else %}
+                        Complete
+                    {% endif %}
                 </td>
                 <td>
-                    {{ b.live }}
+                    {% if b.live == 0 %}
+                        No
+                    {% else %}
+                        Yes
+                    {% endif %}
                 </td>
                 <td>
-                    <a href="{% url 'pins:move_to_live' id=b.id %}" class="btn btn-success">Move to live</a>
+                    <a href="{% url 'pins:move_to_live' id=b.id %}" class="btn btn-primary">Move to live</a>
+                </td>
+                <td>
+                    <a href="{% url 'pins:get_csv' id=b.id %}" class="btn btn-success">Export CSV</a>
                 </td>
             </tr>
             {% endfor %}

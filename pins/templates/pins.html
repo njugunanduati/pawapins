@@ -22,10 +22,8 @@
                 <th>Pin</th>
                 <th>Status</th>
                 <th>Used by</th>
-                <th>Sid</th>
                 <th>Created Date</th>
                 <th>Used At</th>
-                <th>Active</th>
                 <th></th>
             </tr>
         </thead>
@@ -39,22 +37,20 @@
                     {{ c.pin }}
                 </td>
                 <td>
-                    {{ c.status }}
+                    {% if c.status == 0 %}
+                        Not Used
+                    {% else %}
+                        Used
+                    {% endif %}
                 </td>
                 <td>
                     {{ c.used_by }}
-                </td>
-                <td>
-                    {{ c.sid }}
                 </td>
                 <td>
                     {{ c.created_at }}
                 </td>
                 <td>
                     {{ c.used_at }}
-                </td>
-                <td>
-                    {{ c.active }}
                 </td>
             </tr>
             {% endfor %}

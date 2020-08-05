@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from core.models import TimeStampedModel
 import architect
 
+
 @architect.install('partition', type='range', subtype='date', constraint='month', column='created')
 class Subscriber(TimeStampedModel):
     """
@@ -43,15 +44,15 @@ class CardBatch(TimeStampedModel):
 class Card(TimeStampedModel):
     '''
     serial = id/pk
-    status: 0=unused  1=used 2=invalid/expired, 3=invalid/caceled
+    status: 0=unused  1=used 2=invalid/expired, 3=invalid/canceled
     '''
-    pin = models.CharField(max_length=50,unique=True)
+    pin = models.CharField(max_length=50, unique=True)
     batch = models.ForeignKey(CardBatch, on_delete=models.CASCADE)
     status = models.IntegerField(default=0, blank=True)
     used_by = models.CharField(max_length=20, blank=True, null=True)
     sid = models.CharField(max_length=60, blank=True, null=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
-    used_at = models.DateTimeField(auto_now_add=True, blank=True)
+    used_at = models.DateTimeField(auto_now_add=False, blank=True, null=True)
     active = models.BooleanField(default=False, blank=True)
 
     def __str__(self):

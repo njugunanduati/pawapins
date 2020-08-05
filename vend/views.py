@@ -155,6 +155,7 @@ def buy_token(sms, meter, pin, msisdn):
     # update card details
     card.status = 1
     card.used_by = msisdn
+    card.used_at = datetime.now()
     card.active = False
     card.save()
 

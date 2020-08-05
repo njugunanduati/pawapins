@@ -79,8 +79,7 @@ def send_sms(message, msisdn):
         sms_sent = SmsSent(
             msisdn=msisdn,
             message=message,
-            sent_text=message,
-            status=True,
+            sent_text=message
         )
         sms_sent.save()
         print('msg', response.text)

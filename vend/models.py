@@ -86,7 +86,6 @@ class SmsSent(TimeStampedModel):
 	message = models.CharField(max_length=300, null=True)
 	sent_text = models.CharField(max_length=300, null=True)
 	cost = models.CharField(max_length=30, null=True)
-	status = models.CharField(max_length=30, null=True)
 	message_id = models.CharField(max_length=300, null=True)
 
 	def __repr__(self):
