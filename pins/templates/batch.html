@@ -55,7 +55,9 @@
                     <a href="{% url 'pins:move_to_live' id=b.id %}" class="btn btn-primary">Move to live</a>
                 </td>
                 <td>
-                    <a href="{% url 'pins:get_csv' id=b.id %}" class="btn btn-success">Export CSV</a>
+                    {% if b.live == 3 %}
+                        <a href="{% url 'pins:get_csv' id=b.id %}" class="btn btn-success">Export CSV</a>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
