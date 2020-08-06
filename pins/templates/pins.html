@@ -1,19 +1,7 @@
 {% extends "base.html" %}
-{% load crispy_forms_tags %}
+{#{% load crispy_forms_tags %}#}
 
 {% block app_content %}
-
-    {% block form %}
-        <div class="col-sm-6">
-            <form method="post" class="form-inline">
-                {% csrf_token %}
-                {{ form|crispy }}
-                <div class="form-group">
-                    <button type="submit" class="btn btn-success"><i class="fa fa-search"></i>Search</button>
-                </div>
-            </form>
-        </div>
-    {% endblock %}
 
     <table id="pins_datatable" class="table table-striped table-bordered dt-responsive nowrap">
         <thead>
@@ -30,6 +18,9 @@
         <tbody>
             {% for c in pins %}
             <tr>
+                <td>
+                    {{ forloop.counter }} {{ c.pins }}
+                </td>
                 <td>
                     {{ c.batch.id }}
                 </td>
@@ -56,33 +47,6 @@
             {% endfor %}
         </tbody>
     </table>
-    <div class="row">
-        <div class="col-sm-12">
-            {% if pins.has_other_pages %}
-            <ul class="pagination">
-                {% if pins.has_previous %}
-                    <a href="?page={{ pins.previous_page_number }}">&laquo;</a>
-                {% else %}
-                    <li class="disabled"><span>&laquo;</span></li>
-                {% endif %}
-                {% for i in pins.paginator.page_range %}
-                    {% if users.number == i %}
-                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-                    {% else %}
-                        <li><a href="?page={{ i }}">{{ i }}</a></li>
-                    {% endif %}
-                {% endfor %}
-
-                {% if pins.has_next %}
-                    <li><a href="?page={{ pins.next_page_number }}">&raquo;</a></li>
-                {% else %}
-                    <li class="disabled"><span>&raquo;</span></li>
-                {% endif %}
-
-            </ul>
-            {% endif %}
-        </div>
-    </div>
 
 
 
