@@ -61,14 +61,14 @@
                         <a href="{% url 'pins:get_csv' id=b.id %}" class="btn btn-success">Export CSV</a>
                     {% endif %}
                 </td>
-            </tr>I
+            </tr>
             {% endfor %}
         </tbody>
     </table>
     <div class="row">
         <div class="col-sm-6">
             <a href="{% url 'pins:add_batch' %}" class="btn btn-primary">Add batch</a>
-        </div> 
+        </div>
     </div>
 
 {% endblock %}
