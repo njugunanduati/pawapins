@@ -12,7 +12,7 @@ def get_sec_normal():
     else:
         sequence = int(token.seq)
         sequence += 1
-        return sequence
+        return str(sequence)
 
 
 def get_rand():
