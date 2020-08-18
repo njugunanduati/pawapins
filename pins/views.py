@@ -110,8 +110,7 @@ def move_to_live(request, id):
             pins = CardPreview.objects.filter(batch=batch, status=0)
             if pins:
                 for pin in pins:
-                    card = Card(id=pin.id, pin=pin.pin, created_at=pin.created, batch=pin.batch, active=True, status=0,
-                                used_at=datetime(2017, 7, 1))
+                    card = Card(id=pin.id, pin=pin.pin, created_at=pin.created, batch=pin.batch, active=True, status=0)
                     card.save()
                 batch.live = 3
                 batch.save()
@@ -150,7 +149,7 @@ def get_csv(request, id):
     for p in pins:
         serial_no = random.randint(100000, 999999)
         encrypted_pin = gpg.encrypt(p.pin, recipients)
-        print("the pin ", encrypted_pin.stderr)
+        # print("the pin ", encrypted_pin.stderr)
         writer.writerow([str(p.pin), 'PAWA-' + str(serial_no), date_after_month.strftime('%d/%m/%Y'), duration,
                          p.batch.denomination])
     return response

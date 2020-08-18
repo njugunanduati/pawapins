@@ -110,7 +110,7 @@ def sms_post(request):
 
 def buy_token(sms, meter, pin, msisdn):
     try:
-        card = Card.objects.filter(pin=pin).get()
+        card = Card.objects.filter(pin=pin).first()
     except ObjectDoesNotExist:
         message = 'Pin does not exist'
         msg = send_sms(message, msisdn)
