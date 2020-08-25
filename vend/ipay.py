@@ -104,9 +104,9 @@ class IpayConnect:
 		data_frame = self.create_norm_vend()
 		print(data_frame)
 		req = s.send(data_frame)
-		print ("Response sent : %s" % time.ctime())
+		print("Response sent : %s" % time.ctime())
 		resp = s.recv(2048)
-		print ("Response received : %s" % time.ctime())
+		print("Response received : %s" % time.ctime())
 		print(len(resp))
 		data = un_wrap(resp)
 		root = etree.fromstring(data)
@@ -114,6 +114,7 @@ class IpayConnect:
 		for element in root.iter():
 			if element.tag == 'ipayMsg':
 				my_dict['vend_time'] = element.get('time')
+				my_dict['seq_num'] = element.get('seqNum')
 			if element.tag == 'res':
 				my_dict['code'] = element.get('code')
 			if element.tag == 'ref':
