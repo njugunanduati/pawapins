@@ -9,6 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
+from django.utils import timezone
 from django.urls import reverse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -155,7 +156,7 @@ def buy_token(sms, meter, pin, msisdn):
     # update card details
     card.status = 1
     card.used_by = msisdn
-    card.used_at = datetime.now()
+    card.used_at = timezone.now()
     card.active = False
     card.save()
 
