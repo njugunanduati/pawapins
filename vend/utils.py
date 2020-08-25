@@ -5,7 +5,7 @@ from .models import Token, Reversal
 
 
 def get_sec_normal():
-    token = Token.objects.order_by('-created').first()
+    token = Token.objects.all().last()
     if token is None:
         new_seq = 1
         return "0" + str(new_seq)
