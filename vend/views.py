@@ -182,8 +182,7 @@ def buy_token(sms, meter, pin, msisdn):
         phone_number=msisdn,
         meter=meter,
         amount_paid=amount,
-        pin=pin,
-        seq=vend['seq_num']
+        pin=pin
     )
     try:
         token.save()

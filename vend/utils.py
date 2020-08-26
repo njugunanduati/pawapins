@@ -5,7 +5,7 @@ from .models import Transaction
 
 
 def get_sec_normal():
-    trans = Transaction.objects.all().last()
+    trans = Transaction.objects.last()
     if trans is None:
         new_seq = 1
         return "0" + str(new_seq)
