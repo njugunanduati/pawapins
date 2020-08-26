@@ -7,7 +7,7 @@ import random
 import socket
 import ssl
 from lxml import etree
-from .utils import wrap, un_wrap, get_rand
+from .utils import wrap, un_wrap, get_rand, get_sec_normal
 
 my_ref = get_rand()
 
@@ -17,7 +17,7 @@ class IpayConnect:
 	The class to make the socket connection 
 	and vend the electricity token
 	"""
-	def __init__(self, ip, port, client, term, meter, amount, today, my_ref, rev_ref, app_cert, app_key, seq):
+	def __init__(self, ip, port, client, term, meter, amount, today, my_ref, rev_ref, app_cert, app_key):
 		self.ip = ip
 		self.port = int(port)
 		self.client = client
@@ -29,7 +29,6 @@ class IpayConnect:
 		self.rev_ref = rev_ref
 		self.app_cert = app_cert
 		self.app_key = app_key
-		self.seq = seq
 
 	def create_socket(self):
 		"""
@@ -50,7 +49,7 @@ class IpayConnect:
 		create the xml before vend
 		"""
 		try:
-			root = etree.Element('ipayMsg', client=self.client, term=self.term, seqNum=self.seq, time=str(self.today))
+			root = etree.Element('ipayMsg', client=self.client, term=self.term, seqNum=get_sec_normal(), time=str(self.today))
 			elecMsg = etree.SubElement(root,'elecMsg', ver="2.44")
 			vendReq = etree.SubElement(elecMsg, 'vendReq')
 			ref = etree.SubElement(vendReq, 'ref')
@@ -72,7 +71,7 @@ class IpayConnect:
 		"""
 		create the reverse vend
 		"""
-		rev_seq = self.seq
+		rev_seq = get_sec_normal()
 		try:
 			root = etree.Element('ipayMsg', client=self.client, term=self.term, seqNum=rev_seq, time=str(self.today))
 			elecMsg = etree.SubElement(root,'elecMsg', ver="2.44")

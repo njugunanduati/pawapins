@@ -43,6 +43,17 @@ class Token(TimeStampedModel):
 
 
 @architect.install('partition', type='range', subtype='date', constraint='month', column='created')
+class Transaction(TimeStampedModel):
+	"""
+	table for storing the sequence numbers
+	"""
+	seq = models.CharField(max_length=5, default="00001")
+
+	def __str__(self):
+		return self.token
+
+
+@architect.install('partition', type='range', subtype='date', constraint='month', column='created')
 class Reversal(TimeStampedModel):
 	"""
 	table for storing the successful reversals

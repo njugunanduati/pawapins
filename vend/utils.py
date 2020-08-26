@@ -1,16 +1,16 @@
 #!/usr/bin/python3
 import sys
 import random
-from .models import Token, Reversal
+from .models import Transaction
 
 
 def get_sec_normal():
-    token = Token.objects.all().last()
-    if token is None:
+    trans = Transaction.objects.all().last()
+    if trans is None:
         new_seq = 1
         return "0" + str(new_seq)
     else:
-        sequence = int(token.seq)
+        sequence = int(trans.seq)
         sequence += 1
         if len(str(sequence)) == 1:
             new_seq = "0000" + str(sequence)

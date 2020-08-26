@@ -38,7 +38,6 @@ my_ref = get_rand()
 rev_ref = get_rand()
 app_cert = settings.APP_CERT
 app_key = settings.APP_KEY
-seq = get_sec_normal()
 
 
 class SmsReceivedView(LoginRequiredMixin, TemplateView):
@@ -125,7 +124,7 @@ def buy_token(sms, meter, pin, msisdn):
 
     amount = card.batch.denomination
     ipay_connect = IpayConnect(
-        ip, port, client, term, meter, amount, today, my_ref, rev_ref, app_cert, app_key, seq)
+        ip, port, client, term, meter, amount, today, my_ref, rev_ref, app_cert, app_key)
 
     vend = ipay_connect.make_vend()
 
