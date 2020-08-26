@@ -3,6 +3,8 @@ import sys
 import random
 from .models import Transaction
 
+['00001', '00002', '00003', '00004', '00005', '00006']
+
 
 def get_sec_normal():
     trans = Transaction.objects.all().last()

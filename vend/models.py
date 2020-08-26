@@ -50,7 +50,7 @@ class Transaction(TimeStampedModel):
 	seq = models.CharField(max_length=5, default="00001")
 
 	def __str__(self):
-		return self.token
+		return self.seq
 
 
 @architect.install('partition', type='range', subtype='date', constraint='month', column='created')
