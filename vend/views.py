@@ -23,7 +23,7 @@ from .ipay import IpayConnect
 from config import settings
 from .utils import get_rand, get_sec_normal
 
-from .models import Token, Reversal, Sms, SmsSent
+from .models import Token, Reversal, Sms, SmsSent, Transaction
 from pins.models import Subscriber, Card
 from .sms import send_sms
 from .signals import new_sms_received
@@ -131,6 +131,9 @@ def buy_token(sms, meter, pin, msisdn):
     # save the vend data
     print("vend", vend)
     print("the vend code", vend['code'])
+
+    trans = Transaction(seq=vend['seq_num'])
+    trans.save()
 
     if vend['code'] == 'elec001':
         message = 'Incorrect meter number'
