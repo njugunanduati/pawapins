@@ -47,7 +47,7 @@ class Transaction(TimeStampedModel):
 	"""
 	table for storing the sequence numbers
 	"""
-	seq = models.CharField(max_length=5, default="00001")
+	seq = models.CharField(max_length=5, null=True)
 
 	def __str__(self):
 		return self.seq
