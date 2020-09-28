@@ -7,8 +7,8 @@ from .models import Transaction
 def get_sec_normal():
     trans = Transaction.objects.last()
     if trans is None:
-        new_seq = 1
-        return "0" + str(new_seq)
+        seq = 1
+        new_seq = "0" + str(seq)
     else:
         sequence = int(trans.seq)
         sequence += 1
